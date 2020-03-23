@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Project/Clion Project/My_STLite/main.cpp
+iostream
+-
+queue
+-
+ctime
+-
+cstdlib
+-
+priority_queue/priority_queue.hpp
+D:/Project/Clion Project/My_STLite/priority_queue/priority_queue.hpp
+
+D:/Project/Clion Project/My_STLite/priority_queue/exceptions.hpp
+cstddef
+-
+cstring
+-
+string
+-
+
+D:/Project/Clion Project/My_STLite/priority_queue/priority_queue.hpp
+cstddef
+-
+functional
+-
+exceptions.hpp
+D:/Project/Clion Project/My_STLite/priority_queue/exceptions.hpp
+

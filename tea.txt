@@ -1,0 +1,15 @@
+ void down(int i) {    //whether we need to compare it?  todo
+        int tmp; //record the min node
+        bool flag = false;
+        while (2 * i <= curSize && !flag) {
+            tmp = array[i] > array[2 * i] ? 2 * i : i;
+            if (2 * i + 1 <= curSize)
+                if (array[tmp] > array[2 * i + 1]) tmp = 2 * i + 1;
+            if (tmp != i) {
+                T s = array[tmp];
+                array[tmp] = array[i];
+                array[i] = s;
+                i = tmp;
+            } else flag = true;
+        }
+    }
