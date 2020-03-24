@@ -89,9 +89,9 @@ public:
     }  //todo
 
 	const T & top() const {
-	    if(curSize==0)
+	    if(empty())
 	        throw container_is_empty();
-        return array[root].w;
+        return root->w;
 	}
 
 	void push(const T &e) {
