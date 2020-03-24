@@ -20,8 +20,8 @@ public:
         T w;  //value
         int h;  //distance
         Node *lc,*rc;   // leftson and rightson
-        bool operator <(const Node &b ){
-            return Compare()(w,b.w);
+        bool operator >(const Node &b ){
+            return Compare()(b.w,w);
         }
         explicit Node(const T &x): lc(nullptr),rc(nullptr),w(x),h(0){} //init Node
         Node():lc(nullptr),rc(nullptr),h(0){} //init Node
@@ -30,7 +30,7 @@ public:
             if(A== nullptr) return B;
             if(B== nullptr) return A;
 
-            if(*B < *A) std::swap(A, B);  //ensure A<B
+            if(*B > *A) std::swap(A, B);  //ensure A>B
 
             // if(*B < *(A->rc)) std::swap(A->rc, B);  //I suddenly realize it is not necessary
             // BTW, it may cause bugs when A->rc refer to nullptr
