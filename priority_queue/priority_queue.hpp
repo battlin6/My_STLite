@@ -7,9 +7,6 @@
 
 namespace sjtu {
 
-/**
- * a container like std::priority_queue which is a heap internal.
- */
 
 int flag=0;
 int maxSize=0;
@@ -18,36 +15,39 @@ int totSize=0;
 template<typename T, class Compare = std::less<T>>
 class priority_queue {
 public:
-    struct Node{
-        T w;
-        int h,lc,rc;
+    class Node{
+    public:
+        T w;  //value
+        int h;  //distance
+        Node *lc,*rc;   // leftson and rightson
         bool operator <(const Node &b ){
             return Compare()(w,b.w);
         }
+        explicit Node(const T &x): lc(nullptr),rc(nullptr),w(x),h(0){} //init Node
+        Node():lc(nullptr),rc(nullptr),h(0){} //init Node
+
+        Node* merge(Node *A, Node *B){  //just merge
+            if(A== nullptr) return B;
+            if(B== nullptr) return A;
+
+            if(*B < *A) std::swap(A, B);  //ensure A<B
+
+            // if(*B < *(A->rc)) std::swap(A->rc, B);  //I suddenly realize it is not necessary
+            // BTW, it may cause bugs when A->rc refer to nullptr
+
+            A->rc = merge(A->rc, B);
+
+            if(A->lc->h < A->rc->h) {
+                std::swap(A->lc, A->rc);
+            }
+
+            if(A->rc!= nullptr) A->h = A->rc->h + 1;
+            else A->h = 0;
+
+            return A;
+        }
     };
 
-    int curSize=0;
-    int root=0;
-    static Node *array;
-
-
-    int merge(int A, int B){
-        if(!A) return B;
-        if(!B) return A;
-
-        if(array[B] < array[A]) std::swap(A, B);
-
-        if(array[B] < array[array[A].rc]) std::swap(array[A].rc, B);
-        array[A].rc = merge(array[A].rc, B);
-
-        if(array[array[A].lc].h < array[array[A].rc].h) {
-            std::swap(array[A].lc, array[A].rc);
-        }
-        if(array[A].rc) array[A].h = array[array[A].rc].h + 1;
-        else array[A].h = 0;
-
-        return A;
-    }
 
     void Doublespace(){
         Node *tmp =array;
