@@ -104,9 +104,11 @@ public:
 	}
 
 	void pop() {
-        if(curSize==0)
+        if(empty())
             throw container_is_empty();
-        root=del(root);
+        Node *tmp=root;
+        root=Node::merge(root->lc,root->rc);
+        delete tmp;  //attention! just delete, do not DelNode
         curSize--;
     }
 
