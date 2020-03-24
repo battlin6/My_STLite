@@ -49,13 +49,6 @@ public:
     };
 
 
-    int insert(int A, T w){
-        return merge(A, Node_init(w));
-    }
-
-    int del(int A){
-        return merge(array[A].lc, array[A].rc);
-    }
 
 	priority_queue() {     //construct
 	    array = new Node[100];
