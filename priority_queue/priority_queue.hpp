@@ -26,7 +26,7 @@ public:
         explicit Node(const T &x): lc(nullptr),rc(nullptr),w(x),h(0){} //init Node
         Node():lc(nullptr),rc(nullptr),h(0){} //init Node
 
-        Node* merge(Node *A, Node *B){  //just merge
+        static Node* merge(Node *A, Node *B){  //just merge
             if(A== nullptr) return B;
             if(B== nullptr) return A;
 
@@ -46,6 +46,16 @@ public:
 
             return A;
         }
+
+        static Node* CopyNode(const Node *x){   //copy a Node(tree) //mainly to construct a new tree
+            if(x== nullptr) return nullptr;
+            Node* news = new Node(x->w);
+            news->h=x->h;
+            news->lc=CopyNode(x->lc);
+            news->rc=CopyNode(x->rc);
+            return news;
+        }
+
     };
 
 
