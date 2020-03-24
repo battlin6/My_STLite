@@ -113,8 +113,8 @@ public:
     }
 
 	size_t size() const {
-        return size_t(curSize);
-	}  //ok
+        return curSize;
+	}
 
 	bool empty() const {
         return curSize==0;
