@@ -99,8 +99,7 @@ public:
 	}
 
 	void push(const T &e) {
-        int news=insert(root,e);
-        root=news;
+        root=Node::merge(root,new Node(e));
         curSize++;
 	}
 
