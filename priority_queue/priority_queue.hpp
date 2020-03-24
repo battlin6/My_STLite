@@ -118,7 +118,7 @@ public:
 
 	bool empty() const {
         return curSize==0;
-	}  //ok
+	}
 
 	void merge(priority_queue &other) {
         root=merge(root,other.root);
