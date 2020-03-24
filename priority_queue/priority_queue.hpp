@@ -56,6 +56,13 @@ public:
             return news;
         }
 
+        static void DelNode(const Node*x){
+            if(x== nullptr) return;
+            DelNode(x->lc);
+            DelNode(x->rc);
+            delete x;
+        }
+
     };
 
 
