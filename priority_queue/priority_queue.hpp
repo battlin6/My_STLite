@@ -41,19 +41,13 @@ public:
                 std::swap(A->lc, A->rc);
             }
 
-            if(A->rc!= nullptr) A->h = A->rc->h + 1;
+            if(A->rc!= nullptr) A->h = (A->rc->h) + 1;
             else A->h = 0;
 
             return A;
         }
     };
 
-
-    static int Node_init(T w) {
-        array[++totSize].w = w;
-        array[totSize].h = array[totSize].rc = 0;
-        return totSize;
-    }
 
     int insert(int A, T w){
         return merge(A, Node_init(w));
