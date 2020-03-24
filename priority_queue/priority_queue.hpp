@@ -65,19 +65,21 @@ public:
 
     };
 
-
+    Node *root;
+    size_t curSize;
 
 	priority_queue() {     //construct
-	    array = new Node[100];
-	    maxSize=100;
+	    root= nullptr;
+	    curSize=0;
 	}
 
 	priority_queue(const priority_queue &other) {
-
-    }  //todo
+        curSize=other.curSize;
+        root=Node::CopyNode(other.root);
+    }
 
 	~priority_queue() {
-	    delete [] array;
+	    Node::DelNode(root);
 	}
 
 	priority_queue &operator=(const priority_queue &other) {
