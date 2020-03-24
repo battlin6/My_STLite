@@ -37,9 +37,11 @@ public:
 
             A->rc = merge(A->rc, B);
 
-            if(A->lc->h < A->rc->h) {
+            if(A->lc!= nullptr && A->rc!= nullptr && A->lc->h < A->rc->h) {
                 std::swap(A->lc, A->rc);
             }
+            if(A->lc == nullptr && A->rc!= nullptr) //attention the stuation when nullptr->RE!!!
+                std::swap(A->lc,A->rc);
 
             if(A->rc!= nullptr) A->h = (A->rc->h) + 1;
             else A->h = 0;
