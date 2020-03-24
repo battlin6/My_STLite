@@ -123,7 +123,11 @@ public:
 	}
 
 	void merge(priority_queue &other) {
-        root=merge(root,other.root);
+	    curSize+=other.curSize;
+	    other.curSize=0;
+	    root=Node::merge(root,other.root);
+	    other.root= nullptr;
+
 	}
 };
 
