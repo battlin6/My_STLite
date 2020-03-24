@@ -82,11 +82,15 @@ public:
 	    Node::DelNode(root);
 	}
 
-	priority_queue &operator=(const priority_queue &other) {
-        curSize=other.curSize;
-        root=other.root;
+	priority_queue &operator=(const priority_queue &other) {   //pay attention to it  //Don't forget the format in the book
+	    if(this==&other){
+	        return *this;
+	    }
+	    curSize=other.curSize;
+	    Node::DelNode(root);
+	    root=Node::CopyNode(other.root);
         return *this;
-    }  //todo
+    }
 
 	const T & top() const {
 	    if(empty())
