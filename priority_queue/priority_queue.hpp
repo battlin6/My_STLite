@@ -49,16 +49,6 @@ public:
     };
 
 
-    void Doublespace(){
-        Node *tmp =array;
-        maxSize*=2;
-        array= new Node [maxSize];
-        for(int i=0;i<=totSize;++i) {
-            array[i] = tmp[i];
-        }
-        delete [] tmp;
-    }
-
     static int Node_init(T w) {
         array[++totSize].w = w;
         array[totSize].h = array[totSize].rc = 0;
