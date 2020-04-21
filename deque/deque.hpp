@@ -300,11 +300,9 @@ namespace sjtu {
         T &at(const size_t &pos) {
             return operator[](pos);
         }
-
         const T &at(const size_t &pos) const {
             return operator[](pos);
         }
-
         T &operator[](const size_t &pos) {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
@@ -324,7 +322,6 @@ namespace sjtu {
             }
             return *(curNode->v);
         }
-
         const T &operator[](const size_t &pos) const {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
@@ -345,17 +342,16 @@ namespace sjtu {
             return *(curNode->v);
         }
 
-        /**
-         * access the first element
-         * throw container_is_empty when the container is empty.
-         */
-        const T &front() const {}
-
-        /**
-         * access the last element
-         * throw container_is_empty when the container is empty.
-         */
-        const T &back() const {}
+        const T &front() const {
+            if(curSize==0)
+                throw container_is_empty();
+            return *(head->next->head->next->v);
+        }
+        const T &back() const {
+            if(curSize==0)
+                throw container_is_empty();
+            return *(tail->prev->tail->prev->v);
+        }
 
         /**
          * returns an iterator to the beginning.
