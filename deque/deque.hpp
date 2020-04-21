@@ -13,16 +13,123 @@ class deque{
 private:
     size_t curSize;   //size
 
-    /**
+    /*
      *a Node contains one element
-     */
-    class Node{
-        Node* next,pre;
-        T value;
+     * */
+    struct Node {
+        Node *prev, *next;
+        T *v;
 
-        Node():next(nullptr),pre(nullptr),value(0){};
-        ~Node(){};
+        Node() : prev(nullptr), next(nullptr), v(nullptr) {}
+
+        ~Node() {
+            delete v;
+        }
     };
+    /*
+     * a Block contains sqrt(n) Node
+     * */
+    struct Block {
+        Block *prev, *next;
+        Node *head, *tail;
+        size_t _curSize;
+
+        Block() : head(new Node), tail(new Node), prev(nullptr),next(next),_curSize(0) {  //construct
+            head->next = tail;
+            tail->prev = head;
+        }
+
+        static Block* Copy(Block *b) {
+
+            auto news = new Block;
+
+            for (auto x = b->head->next; x != b->tail; x = x->next) {
+                auto tmp = new Node;
+
+                tmp->v = new T(*(tmp->v));
+
+                news->tail->prev->next = tmp;
+                tmp->prev = news->tail->prev;
+
+                tmp->next = news->tail;
+                news->tail->prev = tmp;
+
+            }
+            news->_curSize= b->_curSize;
+
+            return news;
+        }  //copy //attention the memory
+
+        void Merge() {
+
+            Node *x2 = tail, *x3 = next->head;
+
+            x2->prev->next = x3->next;
+            x3->next->prev = x2->prev;
+            delete x2,x3;
+
+            tail = next->tail;
+
+            _curSize += next->_curSize;
+
+            Block *tmp = next;
+            tmp->next->prev = this;
+            next = tmp->next;
+            delete tmp;
+
+        }  //merge this and next
+
+        void Split(const int &k ) {
+            auto news = new Block;
+
+            Node *pos1 = head;
+            for (size_t i = 0; i < k; i++)
+                pos1 = pos1->next;
+            Node *pos2 = pos1->next;
+
+
+            news->next = next;
+            news->prev = this;
+            next->prev = news;
+            next = news;
+
+            //head1 is still head1
+
+            news->tail->prev = tail->prev;
+            tail->prev->next = news->tail;  //tail2
+
+            news->head->next = pos2;
+            pos2->prev = news->head; //head2
+
+            tail->prev = pos1;
+            pos1->next = tail;   //tail1
+
+            news->_curSize = _curSize-k;
+            _curSize = k;     //size
+        }  //split into 1~k and k+1~curSize
+
+        void Del() {
+            Node *x = head->next;
+            while (x != tail) {
+                Node *tmp = x->next;
+                delete x;
+                x = tmp;
+            }
+            _curSize = 0;
+        }
+
+        ~Block() {
+            Node *x = head->next;
+            while (x != tail) {
+                Node *tmp = x->next;
+                delete x;
+                x = tmp;
+            }
+            _curSize = 0;
+            delete head,tail;
+        }
+    };
+
 
 
 public:
