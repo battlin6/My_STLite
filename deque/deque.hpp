@@ -416,24 +416,120 @@ namespace sjtu {
         iterator erase(iterator pos) {} //todo
 
 
-        void push_back(const T &value) {}
+        void push_back(const T &value) {
+            curSize++;
+            if(curSize!=1&&!toSplit(tail->prev->_curSize)){
+                tail->prev->_curSize++;
+                auto tmp=new Node;
+                tmp->v=new T(value);
 
-        /**
-         * removes the last element
-         *     throw when the container is empty.
-         */
-        void pop_back() {}
+                tail->prev->tail->prev->next = tmp;
+                tmp->prev = tail->prev->tail->prev;
+                tmp->next = tail->prev->tail;
+                tail->prev->tail->prev = tmp;
+            }else{  //a new Block
+                auto tmp=new Node;
+                tmp->v=new T(value);
+                auto news=new Block;
 
-        /**
-         * inserts an element to the beginning.
-         */
-        void push_front(const T &value) {}
+                news->head->next = news->tail->prev = tmp;
+                tmp->prev = news->head;
+                tmp->next = news->tail;
 
-        /**
-         * removes the first element.
-         *     throw when the container is empty.
-         */
-        void pop_front() {}
+                tail->prev->next = news;
+                news->prev = tail->prev;
+
+                news->next = tail;
+                tail->prev = news;
+
+                news->_curSize=1;
+            }
+        }
+
+        void pop_back() {
+            if(curSize==0)
+                throw container_is_empty();
+
+            curSize--;
+            tail->prev->_curSize--;
+
+            if(tail->prev->_curSize==0){
+                auto tmp=tail->prev;
+
+                delete tmp->head->next; //delete that cute element
+                delete tmp->head,tmp->tail;
+
+                tmp->prev->next = tmp->next;
+                tmp->next->prev = tmp->prev;
+
+                delete tmp;
+            }else{
+                auto tmpNode=tail->prev->tail->prev;
+
+                tmpNode->prev->next = tmpNode->next;
+                tmpNode->next->prev = tmpNode->prev;
+
+                delete tmpNode;
+            }
+        }
+
+        void push_front(const T &value) {
+            curSize++;
+            if(curSize!=1&&!toSplit(tail->prev->_curSize)){
+                head->next->_curSize++;
+                auto tmp=new Node;
+                tmp->v=new T(value);
+
+                head->next->head->next->prev = tmp;
+                tmp->next = head->next->head->next;
+                tmp->prev = head->next->head;
+                head->next->head->next  = tmp;
+            }else{
+                auto tmp=new Node;
+                tmp->v=new T(value);
+                auto news=new Block;
+
+                news->head->next = news->tail->prev = tmp;
+                tmp->prev = news->head;
+                tmp->next = news->tail;
+
+                head->next->prev = news;
+                news->next = head->next;
+
+                news->prev = head;
+                head->next = news;
+
+                news->_curSize = 1;
+            }
+
+        }
+
+        void pop_front() {
+            if(curSize==0)
+                throw container_is_empty();
+
+            curSize--;
+            head->head->_curSize--;
+
+            if (head->next->size == 0) {
+                auto tmp = head->next;
+
+                delete tmp->head->next;
+                delete tmp->head,tmp->tail;
+
+                tmp->prev->next = tmp->next;
+                tmp->next->prev = tmp->prev;
+
+                delete tmp;
+            } else {
+                auto tmpNode = head->next->head->next;
+
+                tmpNode->prev->next = tmpNode->next;
+                tmpNode->next->prev = tmpNode->prev;
+
+                delete tmpNode;
+            }
+        }
     };
 
 }
