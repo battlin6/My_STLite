@@ -1,4 +1,4 @@
- void down(int i) {    //whether we need to compare it?  todo
+ void down(int i) {    //whether we need to compare it?
         int tmp; //record the min node
         bool flag = false;
         while (2 * i <= curSize && !flag) {

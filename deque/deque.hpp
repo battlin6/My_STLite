@@ -240,7 +240,7 @@ private:
         tail->prev = head;
 	}
 
-	deque(const deque &other):head(new Block),tail(new Block),curSize(0){
+	deque(const deque &other):head(new Block),tail(new Block),curSize(other.curSize){
         head->next = tail;
         tail->prev = head;
 
@@ -262,10 +262,25 @@ private:
 	    delete head,tail;
 	}
 
-	/**
-	 * TODO assignment operator
-	 */
-	deque &operator=(const deque &other) {}
+	deque &operator=(const deque &other) {
+	    if(this==&other) return *this;
+
+	    clear();  //though clear, but in my settings, head and tail remained
+
+        for (auto x = other.head->next; x != other.tail; x = x->next) {
+
+            auto news = Block::Copy(x);
+
+            tail->prev->next = news;
+            news->prev = tail->prev;
+
+            tail->prev = news;
+            news->next = tail;
+        }
+	    curSize=other.curSize;
+        return *this;
+	}
+
 	/**
 	 * access specified element with bounds checking
 	 * throw index_out_of_bound if out of bound.
