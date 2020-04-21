@@ -11,8 +11,6 @@ template<class T>
 class deque{
 
 private:
-    size_t curSize;   //size
-
     /*
      *a Node contains one element
      * */
@@ -131,7 +129,6 @@ private:
     };
 
 
-
 public:
 
 	class const_iterator;
@@ -224,10 +221,15 @@ public:
 	};  //todo
 
 
-	/**
-	 * TODO Constructors
-	 */
-	deque() {}
+private:
+    size_t curSize;
+    Block *head,*tail;
+
+	deque():head(new Block),tail(new Block),curSize(0) {
+        head->next = tail;
+        tail->prev = head;
+	}
+
 	deque(const deque &other) {}
 	/**
 	 * TODO Deconstructor
