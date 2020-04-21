@@ -230,7 +230,21 @@ private:
         tail->prev = head;
 	}
 
-	deque(const deque &other) {}
+	deque(const deque &other):head(new Block),tail(new Block),curSize(0){
+        head->next = tail;
+        tail->prev = head;
+
+        for (auto x = other.head->next; x != other.tail; x = x->next) {
+
+            auto news = Block::Copy(x);
+
+            tail->prev->next = news;
+            news->prev = tail->prev;
+
+            tail->prev = news;
+            news->next = tail;
+        }
+	}  //attention the memory
 	/**
 	 * TODO Deconstructor
 	 */
