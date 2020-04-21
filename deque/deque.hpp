@@ -1,6 +1,15 @@
 #ifndef SJTU_DEQUE_HPP
 #define SJTU_DEQUE_HPP
 
+
+/*
+ * attention
+ * in Block::Del(), head and tail have been deleted
+ * but in deque::clear(), I did't delete head and tail
+ * must delete them outside
+ * in this way,I can delete head->head,head->tail.........etc.
+ */
+
 #include "exceptions.hpp"
 
 #include <cstddef>
@@ -114,6 +123,7 @@ private:
                 x = tmp;
             }
             _curSize = 0;
+            delete head,tail;
         }
 
         ~Block() {
@@ -248,7 +258,9 @@ private:
 	/**
 	 * TODO Deconstructor
 	 */
-	~deque() {}
+	~deque() {
+	    clear();
+	}
 	/**
 	 * TODO assignment operator
 	 */
@@ -289,10 +301,20 @@ private:
 	 * returns the number of elements
 	 */
 	size_t size() const {}
-	/**
-	 * clears the contents
-	 */
-	void clear() {}
+
+
+	void clear() {
+        Block *x = head->next;
+        while (x != tail) {
+            auto *tmp = x->next;
+            x->Del();  //in Del(), head and tail have been deleted
+            delete x;
+            x = tmp;
+        }
+        head->next = tail;
+        tail->prev = head; //attention: here I didn't delete the head and tail
+        curSize = 0;
+    }
 	/**
 	 * inserts elements at the specified locat on in the container.
 	 * inserts value before pos
