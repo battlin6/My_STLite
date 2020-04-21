@@ -356,26 +356,24 @@ namespace sjtu {
         /**
          * returns an iterator to the beginning.
          */
-        iterator begin() {}
+        iterator begin() {} //todo
 
-        const_iterator cbegin() const {}
+        const_iterator cbegin() const {}  //todo
 
         /**
          * returns an iterator to the end.
          */
-        iterator end() {}
+        iterator end() {} //todo
 
-        const_iterator cend() const {}
+        const_iterator cend() const {}  //todo
 
-        /**
-         * checks whether the container is empty.
-         */
-        bool empty() const {}
+        bool empty() const {
+            return curSize==0;
+        }
 
-        /**
-         * returns the number of elements
-         */
-        size_t size() const {}
+        size_t size() const {
+            return curSize;
+        }
 
 
         void clear() {
