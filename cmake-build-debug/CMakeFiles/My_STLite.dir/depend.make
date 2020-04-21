@@ -4,7 +4,7 @@
 CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/data/class-bint.hpp
 CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/data/class-integer.hpp
 CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/data/class-matrix.hpp
-CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/deque1.hpp
+CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/deque.hpp
 CMakeFiles/My_STLite.dir/main.cpp.obj: ../deque/exceptions.hpp
 CMakeFiles/My_STLite.dir/main.cpp.obj: ../main.cpp
 

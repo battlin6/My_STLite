@@ -36,11 +36,9 @@ vector
 stdexcept
 -
 
-D:/Project/Clion Project/My_STLite/deque/deque1.hpp
+D:/Project/Clion Project/My_STLite/deque/deque.hpp
 exceptions.hpp
 D:/Project/Clion Project/My_STLite/deque/exceptions.hpp
-cmath
--
 cstddef
 -
 
@@ -65,6 +63,6 @@ vector
 -
 deque
 -
-deque/deque1.hpp
-D:/Project/Clion Project/My_STLite/deque/deque1.hpp
+deque/deque.hpp
+D:/Project/Clion Project/My_STLite/deque/deque.hpp
 
