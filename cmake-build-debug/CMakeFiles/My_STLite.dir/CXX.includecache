@@ -6,23 +6,45 @@
 
 #IncludeRegexTransform: 
 
-D:/Project/Clion Project/My_STLite/main.cpp
+D:/Project/Clion Project/My_STLite/deque/data/class-bint.hpp
+string
+-
 iostream
 -
-cstdio
--
-algorithm
--
-queue
--
-ctime
+cstring
 -
 cstdlib
 -
-priority_queue/priority_queue.hpp
-D:/Project/Clion Project/My_STLite/priority_queue/priority_queue.hpp
+vector
+-
+stdexcept
+-
+iomanip
+-
+algorithm
+-
 
-D:/Project/Clion Project/My_STLite/priority_queue/exceptions.hpp
+D:/Project/Clion Project/My_STLite/deque/data/class-integer.hpp
+
+D:/Project/Clion Project/My_STLite/deque/data/class-matrix.hpp
+iostream
+-
+iomanip
+-
+vector
+-
+stdexcept
+-
+
+D:/Project/Clion Project/My_STLite/deque/deque1.hpp
+exceptions.hpp
+D:/Project/Clion Project/My_STLite/deque/exceptions.hpp
+cmath
+-
+cstddef
+-
+
+D:/Project/Clion Project/My_STLite/deque/exceptions.hpp
 cstddef
 -
 cstring
@@ -30,11 +52,19 @@ cstring
 string
 -
 
-D:/Project/Clion Project/My_STLite/priority_queue/priority_queue.hpp
-cstddef
+D:/Project/Clion Project/My_STLite/main.cpp
+deque/data/class-integer.hpp
+D:/Project/Clion Project/My_STLite/deque/data/class-integer.hpp
+deque/data/class-matrix.hpp
+D:/Project/Clion Project/My_STLite/deque/data/class-matrix.hpp
+deque/data/class-bint.hpp
+D:/Project/Clion Project/My_STLite/deque/data/class-bint.hpp
+iostream
 -
-functional
+vector
 -
-exceptions.hpp
-D:/Project/Clion Project/My_STLite/priority_queue/exceptions.hpp
+deque
+-
+deque/deque1.hpp
+D:/Project/Clion Project/My_STLite/deque/deque1.hpp
 

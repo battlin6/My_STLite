@@ -8,15 +8,35 @@
 namespace sjtu { 
 
 template<class T>
-class deque {
+class deque{
+
+private:
+    size_t curSize;   //size
+
+    /**
+     *a Node contains one element
+     */
+    class Node{
+        Node* next,pre;
+        T value;
+
+        Node():next(nullptr),pre(nullptr),value(0){};
+        ~Node(){};
+    };
+
+
 public:
+
 	class const_iterator;
+
 	class iterator {
 	private:
 		/**
 		 * TODO add data members
 		 *   just add whatever you want.
 		 */
+
+
 	public:
 		/**
 		 * return a new iterator which pointer n-next elements
@@ -74,7 +94,8 @@ public:
 		 */
 		bool operator!=(const iterator &rhs) const {}
 		bool operator!=(const const_iterator &rhs) const {}
-	};
+	}; //todo
+
 	class const_iterator {
 		// it should has similar member method as iterator.
 		//  and it should be able to construct from an iterator.
@@ -93,7 +114,9 @@ public:
 			// And other methods in iterator.
 			// And other methods in iterator.
 			// And other methods in iterator.
-	};
+	};  //todo
+
+
 	/**
 	 * TODO Constructors
 	 */
