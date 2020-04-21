@@ -13,11 +13,23 @@
 #include "exceptions.hpp"
 
 #include <cstddef>
+#include <cmath>
 
 namespace sjtu {
 
     template<class T>
     class deque {
+
+    private:
+        /*
+         * Judge whether to split or merge
+         * */
+        bool toSplit(const int &k){
+            return k>=20&&k>=int(2.5*std::sqrt(double(curSize)));
+        }
+        bool toMerge(const int &k){
+            return k<=int(0.5*std::sqrt(double(curSize)));
+        }
 
     private:
         /*
@@ -370,11 +382,9 @@ namespace sjtu {
         bool empty() const {
             return curSize==0;
         }
-
         size_t size() const {
             return curSize;
         }
-
 
         void clear() {
             Block *x = head->next;
@@ -395,7 +405,7 @@ namespace sjtu {
          * returns an iterator pointing to the inserted value
          *     throw if the iterator is invalid or it point to a wrong place.
          */
-        iterator insert(iterator pos, const T &value) {}
+        iterator insert(iterator pos, const T &value) {}  //todo
 
         /**
          * removes specified element at pos.
@@ -403,11 +413,9 @@ namespace sjtu {
          * returns an iterator pointing to the following element, if pos pointing to the last element, end() will be returned.
          * throw if the container is empty, the iterator is invalid or it points to a wrong place.
          */
-        iterator erase(iterator pos) {}
+        iterator erase(iterator pos) {} //todo
 
-        /**
-         * adds an element to the end
-         */
+
         void push_back(const T &value) {}
 
         /**
