@@ -54,7 +54,7 @@ namespace sjtu {
             Node *head, *tail;
             size_t _curSize;
 
-            Block() : head(new Node), tail(new Node), prev(nullptr), next(next), _curSize(0) {  //construct
+            Block() : head(new Node), tail(new Node), prev(nullptr), next(nullptr), _curSize(0) {  //construct
                 head->next = tail;
                 tail->prev = head;
             }
@@ -66,7 +66,7 @@ namespace sjtu {
                 for (auto x = b->head->next; x != b->tail; x = x->next) {
                     auto tmp = new Node;
 
-                    tmp->v = new T(*(tmp->v));
+                    tmp->v = new T(*(x->v));
 
                     news->tail->prev->next = tmp;
                     tmp->prev = news->tail->prev;
@@ -139,7 +139,7 @@ namespace sjtu {
                 delete head, tail;
             }
 
-            ~Block() {
+            /*~Block() {
                 Node *x = head->next;
                 while (x != tail) {
                     Node *tmp = x->next;
@@ -149,6 +149,7 @@ namespace sjtu {
                 _curSize = 0;
                 delete head, tail;
             }
+             */ //Don't need!!!!!!!  cause delete again and running error
         };
 
     public:
@@ -157,11 +158,23 @@ namespace sjtu {
 
         class iterator {
         private:
-            /**
-             * TODO add data members
-             *   just add whatever you want.
-             */
+            /*
+             * these three pointer point to the location
+             * */
+            deque* nowdeque;
+            Block* nowBlock;
+            Node* nowNode;
+        public:
+            explicit iterator(deque* a1 = nullptr,Block* a2 = nullptr,Node* a3 = nullptr){
+                nowdeque=a1;
+                nowBlock=a2;
+                nowNode=a3;
+            }
+             //iterator():nowdeque(nullptr),nowBlock(nullptr),nowNode(nullptr){};
 
+            iterator(const iterator &other)= default;
+
+            //iterator(const const_iterator &other):nowdeque(other.),nowBlock(nullptr),nowNode(nullptr)
 
         public:
             /**
@@ -421,7 +434,7 @@ namespace sjtu {
             if(curSize!=1&&!toSplit(tail->prev->_curSize)){
                 tail->prev->_curSize++;
                 auto tmp=new Node;
-                tmp->v=new T(value);
+                tmp->v = new T(value);
 
                 tail->prev->tail->prev->next = tmp;
                 tmp->prev = tail->prev->tail->prev;
@@ -429,7 +442,7 @@ namespace sjtu {
                 tail->prev->tail->prev = tmp;
             }else{  //a new Block
                 auto tmp=new Node;
-                tmp->v=new T(value);
+                tmp->v = new T(value);
                 auto news=new Block;
 
                 news->head->next = news->tail->prev = tmp;
@@ -445,7 +458,6 @@ namespace sjtu {
                 news->_curSize=1;
             }
         }
-
         void pop_back() {
             if(curSize==0)
                 throw container_is_empty();
@@ -472,7 +484,6 @@ namespace sjtu {
                 delete tmpNode;
             }
         }
-
         void push_front(const T &value) {
             curSize++;
             if(curSize!=1&&!toSplit(tail->prev->_curSize)){
@@ -503,15 +514,14 @@ namespace sjtu {
             }
 
         }
-
         void pop_front() {
             if(curSize==0)
                 throw container_is_empty();
 
             curSize--;
-            head->head->_curSize--;
+            head->next->_curSize--;
 
-            if (head->next->size == 0) {
+            if (head->next->_curSize == 0) {
                 auto tmp = head->next;
 
                 delete tmp->head->next;
