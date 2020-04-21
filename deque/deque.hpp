@@ -255,12 +255,13 @@ private:
             news->next = tail;
         }
 	}  //attention the memory
-	/**
-	 * TODO Deconstructor
-	 */
+
 	~deque() {
-	    clear();
+	    clear();  //here I continue to do the work after clear
+	    delete head->head,head->tail,tail->head,tail->tail;
+	    delete head,tail;
 	}
+
 	/**
 	 * TODO assignment operator
 	 */
