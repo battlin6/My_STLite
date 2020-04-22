@@ -158,6 +158,9 @@ namespace sjtu {
         class const_iterator;
 
         class iterator {
+            friend iterator deque::insert(iterator pos, const T &value);
+            friend iterator deque::erase(iterator pos);
+
         private:
             /*
              * these three pointers point to the location
@@ -713,12 +716,12 @@ namespace sjtu {
             }
 
             curSize++;
-            auto tmp=pos.nowBlock;
+            auto tmp = pos.nowBlock;
             tmp->_curSize++;
 
             auto newNode =new Node;
             newNode->v= new T(value);
-            auto priNode =pos.nowNode;
+            auto priNode = pos.nowNode;
 
             newNode->prev =priNode->prev;
             newNode->prev->next=newNode;
@@ -741,7 +744,64 @@ namespace sjtu {
          * returns an iterator pointing to the following element, if pos pointing to the last element, end() will be returned.
          * throw if the container is empty, the iterator is invalid or it points to a wrong place.
          */
-        iterator erase(iterator pos) {} //todo
+        iterator erase(iterator pos) {
+            if (pos.nowNode == nullptr || pos.nowNode->v == nullptr|| pos.nowdeque!=this)
+                throw invalid_iterator();
+
+            curSize--;
+
+            auto priBlock=pos.nowBlock;
+            priBlock->_curSize--;
+            auto priNode=pos.nowNode;
+
+            if(priBlock->_curSize==0){
+                iterator news(this,priBlock->next,priBlock->next->head->next);
+
+                priBlock->Del();
+
+                priBlock->next->prev=priBlock->prev;
+                priBlock->prev->next=priBlock->next;
+
+                delete priBlock;
+
+                return news;
+            }      //specially the Block size==0;
+
+            bool flag=false;
+            Node* nextNode;
+            if(priNode->next==priBlock->tail) {
+                nextNode = priBlock->next->head->next;
+                flag=true;
+            }
+            else
+                nextNode=priNode->next;    //get the nextNode
+
+            priNode->next->prev=priNode->prev;
+            priNode->prev->next=priNode->next;   //link the prev and next of the erase Node
+
+            delete priNode;
+
+            if(priBlock->prev!=head && toMerge(priBlock->_curSize + priBlock->prev->_curSize)){
+                auto newBlock=priBlock->prev;
+                newBlock->Merge();
+
+                if(flag){
+                    return iterator(this,newBlock->next,nextNode);
+                } else{
+                    return iterator(this,newBlock,nextNode);
+                }
+            }else if(priBlock->next!=tail && toMerge(priBlock->_curSize + priBlock->next->_curSize)){
+                auto newBlock=priBlock;
+                newBlock->Merge();
+                return iterator(this,newBlock,nextNode);
+            }else{
+                if(flag){
+                    return iterator(this,priBlock->next,nextNode);
+                }else{
+                    return iterator(this,priBlock,nextNode);
+                }
+            }
+        }
 
 
         void push_back(const T &value) {
