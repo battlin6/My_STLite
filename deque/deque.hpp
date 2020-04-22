@@ -24,11 +24,12 @@ namespace sjtu {
         /*
          * Judge whether to split or merge
          * */
-        bool toSplit(const int &k){
-            return k>=20&&k>=int(2.5*std::sqrt(double(curSize)));
+        bool toSplit(const int &k) {
+            return k >= 20 && k >= int(2.5 * std::sqrt(double(curSize)));
         }
-        bool toMerge(const int &k){
-            return k<=int(0.5*std::sqrt(double(curSize)));
+
+        bool toMerge(const int &k) {
+            return k <= int(0.5 * std::sqrt(double(curSize)));
         }
 
     private:
@@ -45,6 +46,7 @@ namespace sjtu {
                 delete v;
             }
         };
+
         /*
          * a Block contains sqrt(n) Node
          * */
@@ -160,29 +162,31 @@ namespace sjtu {
             /*
              * these three pointers point to the location
              * */
-            deque* nowdeque;
-            Block* nowBlock;
-            Node* nowNode;
-        public:
-            explicit iterator(deque* a1 = nullptr,Block* a2 = nullptr,Node* a3 = nullptr){
-                nowdeque=a1;
-                nowBlock=a2;
-                nowNode=a3;
-            }
-            iterator(const iterator &other)= default;
+            deque *nowdeque;
+            Block *nowBlock;
+            Node *nowNode;
 
         public:
-            int getPos() const{
-                int pos=0;
-                for(auto x=nowNode;x.prev!=nowBlock->head;x=x->prev)
+            explicit iterator(deque *a1 = nullptr, Block *a2 = nullptr, Node *a3 = nullptr) {
+                nowdeque = a1;
+                nowBlock = a2;
+                nowNode = a3;
+            }
+            iterator(const iterator &other) = default;
+            explicit iterator(const const_iterator &other):nowdeque(other.nowdeque), nowBlock(other.nowBlock), nowNode(other.nowNode) {}
+
+        public:
+            int getPos() const {
+                int pos = 0;
+                for (auto x = nowNode; x.prev != nowBlock->head; x = x->prev)
                     pos++;
-                for(auto x=nowBlock;x->prev!=nowdeque->head;x=x->prev)
-                    pos+=nowBlock->prev->_curSize;
+                for (auto x = nowBlock; x->prev != nowdeque->head; x = x->prev)
+                    pos += nowBlock->prev->_curSize;
                 return pos;
             }  //attention: this pos is 0-base
 
             iterator operator+(const int &n) const {
-                if(n<0)
+                if (n < 0)
                     return operator-(-n);
 
                 iterator news(*this);
@@ -213,8 +217,9 @@ namespace sjtu {
                 return news;
 
             }
+
             iterator operator-(const int &n) const {
-                if(n<0)
+                if (n < 0)
                     return operator+(-n);
 
                 iterator news(*this);
@@ -246,122 +251,301 @@ namespace sjtu {
             }
 
             int operator-(const iterator &rhs) const {
-                if(nowdeque!=rhs.nowdeque)
+                if (nowdeque != rhs.nowdeque)
                     throw invalid_iterator();
-                return getPos()-rhs.getPos();
+                return getPos() - rhs.getPos();
             }
 
             iterator &operator+=(const int &n) {
-                iterator tmp=this+n;
-                nowBlock=tmp.nowBlock;
-                nowNode=tmp.nowdeque;
+                iterator tmp = this + n;
+                nowBlock = tmp.nowBlock;
+                nowNode = tmp.nowdeque;
                 return *this;
             }
+
             iterator &operator-=(const int &n) {
-                iterator tmp=this-n;
-                nowBlock=tmp.nowBlock;
-                nowNode=tmp.nowdeque;
+                iterator tmp = this - n;
+                nowBlock = tmp.nowBlock;
+                nowNode = tmp.nowdeque;
                 return *this;
 
 
             }
 
-            iterator operator++(int) {
-                if(*this == nowdeque->end())
+            const iterator operator++(int) {
+                if (*this == nowdeque->end())
                     throw invalid_iterator();
 
-                auto x=iterator(*this);
+                auto x = iterator(*this);
 
-                nowNode=nowNode->next;
-                if(nowNode==nowBlock->tail) {
+                nowNode = nowNode->next;
+                if (nowNode == nowBlock->tail) {
                     nowBlock = nowBlock->next;
                     nowNode = nowBlock->head->next;
                 }
                 return x;
             }
+
             iterator &operator++() {
-                if(*this == nowdeque->end())
+                if (*this == nowdeque->end())
                     throw invalid_iterator();
 
-                nowNode=nowNode->next;
-                if(nowNode==nowBlock->tail){
-                    nowBlock=nowBlock->next;
-                    nowNode=nowBlock->head->next;
+                nowNode = nowNode->next;
+                if (nowNode == nowBlock->tail) {
+                    nowBlock = nowBlock->next;
+                    nowNode = nowBlock->head->next;
                 }
 
                 return *this;
             }
-            iterator operator--(int) {
-                if(*this == nowdeque->begin())
+
+            const iterator operator--(int) {
+                if (*this == nowdeque->begin())
                     throw invalid_iterator();
 
-                auto x=iterator(*this);
+                auto x = iterator(*this);
 
-                nowNode=nowNode->prev;
-                if(nowNode==nowBlock->head){
-                    nowBlock=nowBlock->prev;
-                    nowNode=nowBlock->tail->prev;
+                nowNode = nowNode->prev;
+                if (nowNode == nowBlock->head) {
+                    nowBlock = nowBlock->prev;
+                    nowNode = nowBlock->tail->prev;
                 }
                 return x;
             }
+
             iterator &operator--() {
-                if(*this == nowdeque->begin())
+                if (*this == nowdeque->begin())
                     throw invalid_iterator();
 
-                nowNode=nowNode->prev;
-                if(nowNode==nowBlock->head){
-                    nowBlock=nowBlock->prev;
-                    nowNode=nowBlock->tail->prev;
+                nowNode = nowNode->prev;
+                if (nowNode == nowBlock->head) {
+                    nowBlock = nowBlock->prev;
+                    nowNode = nowBlock->tail->prev;
                 }
                 return *this;
             }
 
             T &operator*() const {
-                if(nowNode== nullptr||nowNode->v== nullptr)
+                if (nowNode == nullptr || nowNode->v == nullptr)
                     throw invalid_iterator();
                 return *(nowNode->v);
             }
+
             T *operator->() const noexcept {
-                if(nowNode== nullptr||nowNode->v== nullptr)
+                if (nowNode == nullptr || nowNode->v == nullptr)
                     throw invalid_iterator();
                 return nowNode->v;
             }
 
-            /**
-             * a operator to check whether two iterators are same (pointing to the same memory).
-             */
-            bool operator==(const iterator &rhs) const {}
+            bool operator==(const iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
 
-            bool operator==(const const_iterator &rhs) const {}
+            bool operator==(const const_iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
 
-            /**
-             * some other operator for iterator.
-             */
-            bool operator!=(const iterator &rhs) const {}
+            bool operator!=(const iterator &rhs) const {
+                return nowNode != rhs.nowNode;
+            }
 
-            bool operator!=(const const_iterator &rhs) const {}
+            bool operator!=(const const_iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
         };
 
         class const_iterator {
         private:
-            deque* nowdeque;
-            Block* nowBlock;
-            Node* nowNode;
+            deque *nowdeque;
+            Block *nowBlock;
+            Node *nowNode;
+
         public:
-            const_iterator() {
-                // TODO
+            explicit const_iterator(deque *a1 = nullptr, Block *a2 = nullptr, Node *a3 = nullptr) {
+                nowdeque = a1;
+                nowBlock = a2;
+                nowNode = a3;
+            }
+            const_iterator(const const_iterator &other) = default;
+            explicit const_iterator(const iterator &other):nowdeque(other.nowdeque), nowBlock(other.nowBlock), nowNode(other.nowNode) {}
+
+        public:
+            int getPos() const {
+                int pos = 0;
+                for (auto x = nowNode; x.prev != nowBlock->head; x = x->prev)
+                    pos++;
+                for (auto x = nowBlock; x->prev != nowdeque->head; x = x->prev)
+                    pos += nowBlock->prev->_curSize;
+                return pos;
+            }  //attention: this pos is 0-base
+
+            const_iterator operator+(const int &n) const {
+                if (n < 0)
+                    return operator-(-n);
+
+                const_iterator news(*this);
+                int cnt = 0;
+
+                while (cnt < n && news.nowNode->next != news.nowBlock->tail) {
+                    cnt++;
+                    news.nowNode = news.nowNode->next;
+                }
+                if (cnt == n) return news;
+
+                cnt++;
+                news.nowBlock = news.nowBlock->next;
+
+                while (cnt + news.nowBlock->_curSize <= n && news.nowBlock->_curSize != 0) {
+                    cnt += news.nowBlock->_curSize;
+                    news.nowBlock = news.nowBlock->next;
+                }
+
+                if (news.nowBlock->_curSize == 0)
+                    throw invalid_iterator();
+
+                news.nowNode = news.nowBlock->head->next;
+                while (cnt < n) {
+                    cnt++;
+                    news.nowNode = news.nowNode->next;
+                }
+                return news;
+
             }
 
-            const_iterator(const const_iterator &other) {
-                // TODO
+            const_iterator operator-(const int &n) const {
+                if (n < 0)
+                    return operator+(-n);
+
+                const_iterator news(*this);
+                int cnt = 0;
+
+                while (cnt < n && news.nowNode->prev != news.nowBlock->head) {
+                    cnt++;
+                    news.nowNode = news.nowNode->prev;
+                }
+                if (cnt == n) return news;
+
+                cnt++;
+                news.nowBlock = news.nowBlock->prev;
+
+                while (cnt + news.nowBlock->_curSize <= n && news.nowBlock->_curSize != 0) {
+                    cnt += news.nowBlock->_curSize;
+                    news.nowBlock = news.nowBlock->prev;
+                }
+
+                if (news.nowBlock->_curSize == 0)
+                    throw invalid_iterator();
+
+                news.nowNode = news.nowBlock->tail->prev;
+                while (cnt < n) {
+                    cnt++;
+                    news.nowNode = news.nowNode->prev;
+                }
+                return news;
             }
 
-            const_iterator(const iterator &other) {
-                // TODO
+            int operator-(const const_iterator &rhs) const {
+                if (nowdeque != rhs.nowdeque)
+                    throw invalid_iterator();
+                return getPos() - rhs.getPos();
             }
-            // And other methods in iterator.
-            // And other methods in iterator.
-            // And other methods in iterator.
+
+            const_iterator &operator+=(const int &n) {
+                const_iterator tmp = this + n;
+                nowBlock = tmp.nowBlock;
+                nowNode = tmp.nowdeque;
+                return *this;
+            }
+
+            const_iterator &operator-=(const int &n) {
+                const_iterator tmp = this - n;
+                nowBlock = tmp.nowBlock;
+                nowNode = tmp.nowdeque;
+                return *this;
+
+
+            }
+
+            const const_iterator operator++(int) {
+                if (*this == nowdeque->cend())
+                    throw invalid_iterator();
+
+                auto x = const_iterator(*this);
+
+                nowNode = nowNode->next;
+                if (nowNode == nowBlock->tail) {
+                    nowBlock = nowBlock->next;
+                    nowNode = nowBlock->head->next;
+                }
+                return x;
+            }
+
+            const_iterator &operator++() {
+                if (*this == nowdeque->cend())
+                    throw invalid_iterator();
+
+                nowNode = nowNode->next;
+                if (nowNode == nowBlock->tail) {
+                    nowBlock = nowBlock->next;
+                    nowNode = nowBlock->head->next;
+                }
+
+                return *this;
+            }
+
+            const const_iterator operator--(int) {
+                if (*this == nowdeque->cbegin())
+                    throw invalid_iterator();
+
+                auto x = const_iterator(*this);
+
+                nowNode = nowNode->prev;
+                if (nowNode == nowBlock->head) {
+                    nowBlock = nowBlock->prev;
+                    nowNode = nowBlock->tail->prev;
+                }
+                return x;
+            }
+
+            const_iterator &operator--() {
+                if (*this == nowdeque->cbegin())
+                    throw invalid_iterator();
+
+                nowNode = nowNode->prev;
+                if (nowNode == nowBlock->head) {
+                    nowBlock = nowBlock->prev;
+                    nowNode = nowBlock->tail->prev;
+                }
+                return *this;
+            }
+
+            T &operator*() const {
+                if (nowNode == nullptr || nowNode->v == nullptr)
+                    throw invalid_iterator();
+                return *(nowNode->v);
+            }
+
+            T *operator->() const noexcept {
+                if (nowNode == nullptr || nowNode->v == nullptr)
+                    throw invalid_iterator();
+                return nowNode->v;
+            }
+
+            bool operator==(const iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
+
+            bool operator==(const const_iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
+
+            bool operator!=(const iterator &rhs) const {
+                return nowNode != rhs.nowNode;
+            }
+
+            bool operator!=(const const_iterator &rhs) const {
+                return nowNode == rhs.nowNode;
+            }
         };
 
     private:
@@ -418,9 +602,11 @@ namespace sjtu {
         T &at(const size_t &pos) {
             return operator[](pos);
         }
+
         const T &at(const size_t &pos) const {
             return operator[](pos);
         }
+
         T &operator[](const size_t &pos) {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
@@ -440,6 +626,7 @@ namespace sjtu {
             }
             return *(curNode->v);
         }
+
         const T &operator[](const size_t &pos) const {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
@@ -461,34 +648,39 @@ namespace sjtu {
         }
 
         const T &front() const {
-            if(curSize==0)
+            if (curSize == 0)
                 throw container_is_empty();
             return *(head->next->head->next->v);
         }
+
         const T &back() const {
-            if(curSize==0)
+            if (curSize == 0)
                 throw container_is_empty();
             return *(tail->prev->tail->prev->v);
         }
 
         iterator begin() {
-            return iterator(this,head->next,head->next->head->next);
+            return iterator(this, head->next, head->next->head->next);
         }
+
         const_iterator cbegin() const {
-            return const_iterator(this,head->next,head->next->head->next);
+            return const_iterator(this, head->next, head->next->head->next);
         }
+
         //pointing to the next of the last element
         //attention: **the next!!!!**
         iterator end() {
-            return iterator(this,tail,tail->head->next);
+            return iterator(this, tail, tail->head->next);
         }
+
         const_iterator cend() const {
-            return const_iterator(this,tail,tail->head->next);
+            return const_iterator(this, tail, tail->head->next);
         }
 
         bool empty() const {
-            return curSize==0;
+            return curSize == 0;
         }
+
         size_t size() const {
             return curSize;
         }
@@ -512,7 +704,36 @@ namespace sjtu {
          * returns an iterator pointing to the inserted value
          *     throw if the iterator is invalid or it point to a wrong place.
          */
-        iterator insert(iterator pos, const T &value) {}  //todo
+        iterator insert(iterator pos, const T &value) {
+            if(pos.nowdeque!=this)
+                throw invalid_iterator();
+            if(pos==end()){
+                push_back(value);
+                return --end();
+            }
+
+            curSize++;
+            auto tmp=pos.nowBlock;
+            tmp->_curSize++;
+
+            auto newNode =new Node;
+            newNode->v= new T(value);
+            auto priNode =pos.nowNode;
+
+            newNode->prev =priNode->prev;
+            newNode->prev->next=newNode;
+            newNode->next=priNode;
+            priNode->prev=newNode;
+
+            if(toSplit(tmp->_curSize)){
+                tmp->Split((tmp->_curSize)/2);
+            }
+            for(auto x=tmp->head->next;x!=tmp->tail;x=x->next){
+                if(x==newNode)
+                    return iterator(this,tmp,newNode);
+            }
+            return iterator(this,tmp->next,newNode);
+        }
 
         /**
          * removes specified element at pos.
@@ -525,19 +746,19 @@ namespace sjtu {
 
         void push_back(const T &value) {
             curSize++;
-            if(curSize!=1&&!toSplit(tail->prev->_curSize)){
+            if (curSize != 1 && !toSplit(tail->prev->_curSize)) {
                 tail->prev->_curSize++;
-                auto tmp=new Node;
+                auto tmp = new Node;
                 tmp->v = new T(value);
 
                 tail->prev->tail->prev->next = tmp;
                 tmp->prev = tail->prev->tail->prev;
                 tmp->next = tail->prev->tail;
                 tail->prev->tail->prev = tmp;
-            }else{  //a new Block
-                auto tmp=new Node;
+            } else {  //a new Block
+                auto tmp = new Node;
                 tmp->v = new T(value);
-                auto news=new Block;
+                auto news = new Block;
 
                 news->head->next = news->tail->prev = tmp;
                 tmp->prev = news->head;
@@ -549,28 +770,29 @@ namespace sjtu {
                 news->next = tail;
                 tail->prev = news;
 
-                news->_curSize=1;
+                news->_curSize = 1;
             }
         }
+
         void pop_back() {
-            if(curSize==0)
+            if (curSize == 0)
                 throw container_is_empty();
 
             curSize--;
             tail->prev->_curSize--;
 
-            if(tail->prev->_curSize==0){
-                auto tmp=tail->prev;
+            if (tail->prev->_curSize == 0) {
+                auto tmp = tail->prev;
 
                 delete tmp->head->next; //delete that cute element
-                delete tmp->head,tmp->tail;
+                delete tmp->head, tmp->tail;
 
                 tmp->prev->next = tmp->next;
                 tmp->next->prev = tmp->prev;
 
                 delete tmp;
-            }else{
-                auto tmpNode=tail->prev->tail->prev;
+            } else {
+                auto tmpNode = tail->prev->tail->prev;
 
                 tmpNode->prev->next = tmpNode->next;
                 tmpNode->next->prev = tmpNode->prev;
@@ -578,21 +800,22 @@ namespace sjtu {
                 delete tmpNode;
             }
         }
+
         void push_front(const T &value) {
             curSize++;
-            if(curSize!=1&&!toSplit(tail->prev->_curSize)){
+            if (curSize != 1 && !toSplit(tail->prev->_curSize)) {
                 head->next->_curSize++;
-                auto tmp=new Node;
-                tmp->v=new T(value);
+                auto tmp = new Node;
+                tmp->v = new T(value);
 
                 head->next->head->next->prev = tmp;
                 tmp->next = head->next->head->next;
                 tmp->prev = head->next->head;
-                head->next->head->next  = tmp;
-            }else{
-                auto tmp=new Node;
-                tmp->v=new T(value);
-                auto news=new Block;
+                head->next->head->next = tmp;
+            } else {
+                auto tmp = new Node;
+                tmp->v = new T(value);
+                auto news = new Block;
 
                 news->head->next = news->tail->prev = tmp;
                 tmp->prev = news->head;
@@ -608,8 +831,9 @@ namespace sjtu {
             }
 
         }
+
         void pop_front() {
-            if(curSize==0)
+            if (curSize == 0)
                 throw container_is_empty();
 
             curSize--;
@@ -619,7 +843,7 @@ namespace sjtu {
                 auto tmp = head->next;
 
                 delete tmp->head->next;
-                delete tmp->head,tmp->tail;
+                delete tmp->head, tmp->tail;
 
                 tmp->prev->next = tmp->next;
                 tmp->next->prev = tmp->prev;
