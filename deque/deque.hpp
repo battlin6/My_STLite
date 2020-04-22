@@ -159,7 +159,7 @@ namespace sjtu {
         class iterator {
         private:
             /*
-             * these three pointer point to the location
+             * these three pointers point to the location
              * */
             deque* nowdeque;
             Block* nowBlock;
@@ -170,24 +170,72 @@ namespace sjtu {
                 nowBlock=a2;
                 nowNode=a3;
             }
-             //iterator():nowdeque(nullptr),nowBlock(nullptr),nowNode(nullptr){};
-
             iterator(const iterator &other)= default;
 
-            //iterator(const const_iterator &other):nowdeque(other.),nowBlock(nullptr),nowNode(nullptr)
-
         public:
-            /**
-             * return a new iterator which pointer n-next elements
-             *   even if there are not enough elements, the behaviour is **undefined**.
-             * as well as operator-
-             */
             iterator operator+(const int &n) const {
-                //TODO
+                if(n<0)
+                    return operator-(-n);
+
+                iterator news(*this);
+                int cnt = 0;
+
+                while (cnt < n && news.nowNode->next != news.nowBlock->tail) {
+                    cnt++;
+                    news.nowNode = news.nowNode->next;
+                }
+                if (cnt == n) return news;
+
+                cnt++;
+                news.nowBlock = news.nowBlock->next;
+
+                while (cnt + news.nowBlock->_curSize <= n && news.nowBlock->_curSize != 0) {
+                    cnt += news.nowBlock->_curSize;
+                    news.nowBlock = news.nowBlock->next;
+                }
+
+                if (news.nowBlock->_curSize == 0)
+                    throw invalid_iterator();
+
+                news.nowNode = news.nowBlock->head->next;
+                while (cnt < n) {
+                    cnt++;
+                    news.nowNode = news.nowNode->next;
+                }
+                return news;
+
             }
 
             iterator operator-(const int &n) const {
-                //TODO
+                if(n<0)
+                    return operator+(-n);
+
+                iterator news(*this);
+                int cnt = 0;
+
+                while (cnt < n && news.nowNode->prev != news.nowBlock->head) {
+                    cnt++;
+                    news.nowNode = news.nowNode->prev;
+                }
+                if (cnt == n) return news;
+
+                cnt++;
+                news.nowBlock = news.nowBlock->prev;
+
+                while (cnt + news.nowBlock->_curSize <= n && news.nowBlock->_curSize != 0) {
+                    cnt += news.nowBlock->_curSize;
+                    news.nowBlock = news.nowBlock->prev;
+                }
+
+                if (news.nowBlock->_curSize == 0)
+                    throw invalid_iterator();
+
+                news.nowNode = news.nowBlock->tail->prev;
+                while (cnt < n) {
+                    cnt++;
+                    news.nowNode = news.nowNode->prev;
+                }
+                return news;
             }
 
             // return th distance between two iterator,
@@ -247,13 +295,13 @@ namespace sjtu {
             bool operator!=(const iterator &rhs) const {}
 
             bool operator!=(const const_iterator &rhs) const {}
-        }; //todo
+        };
 
         class const_iterator {
-            // it should has similar member method as iterator.
-            //  and it should be able to construct from an iterator.
         private:
-            // data members.
+            deque* nowdeque;
+            Block* nowBlock;
+            Node* nowNode;
         public:
             const_iterator() {
                 // TODO
