@@ -25,11 +25,14 @@ namespace sjtu {
          * Judge whether to split or merge
          * */
         bool toSplit(const int &k) {
-            return k >= 20 && k >= int(2.5 * std::sqrt(double(curSize)));
+            return k > 10 && k > int(2.89* std::sqrt(curSize));
+        }
+        bool toNew(const int &k){
+            return k > 10 && k > int(1.98* std::sqrt(curSize));
         }
 
         bool toMerge(const int &k) {
-            return k <= int(0.5 * std::sqrt(double(curSize)));
+            return k < int(0.48 * std::sqrt(curSize));
         }
 
     private:
@@ -55,7 +58,7 @@ namespace sjtu {
             Node *head, *tail;
             size_t _curSize;
 
-            Block() : head(new Node), tail(new Node), prev(nullptr), next(nullptr), _curSize(0) {  //construct
+            Block() : head(new Node), tail(new Node), _curSize(0) {  //construct
                 head->next = tail;
                 tail->prev = head;
             }
@@ -63,7 +66,7 @@ namespace sjtu {
             static Block *Copy(Block *b) {
 
                 auto news = new Block;
-
+                news->_curSize = b->_curSize;
                 for (auto x = b->head->next; x != b->tail; x = x->next) {
                     auto tmp = new Node;
 
@@ -76,8 +79,6 @@ namespace sjtu {
                     news->tail->prev = tmp;
 
                 }
-                news->_curSize = b->_curSize;
-
                 return news;
             }  //copy //attention the memory
 
@@ -170,21 +171,18 @@ namespace sjtu {
             Node *nowNode;
 
         public:
-            explicit iterator(deque *a1 = nullptr, Block *a2 = nullptr, Node *a3 = nullptr) {
-                nowdeque = a1;
-                nowBlock = a2;
-                nowNode = a3;
-            }
+            explicit iterator(deque *a1 = nullptr, Block *a2 = nullptr, Node *a3 = nullptr):nowdeque(a1),nowBlock(a2),nowNode(a3){}
             iterator(const iterator &other) = default;
             explicit iterator(const const_iterator &other):nowdeque(other.nowdeque), nowBlock(other.nowBlock), nowNode(other.nowNode) {}
 
         public:
             int getPos() const {
                 int pos = 0;
-                for (auto x = nowNode; x.prev != nowBlock->head; x = x->prev)
+                for (auto x = nowNode; x->prev != nowBlock->head; x = x->prev)
                     pos++;
-                for (auto x = nowBlock; x->prev != nowdeque->head; x = x->prev)
-                    pos += nowBlock->prev->_curSize;
+                for (auto x = nowBlock; x->prev != nowdeque->head; x =x->prev)
+                    pos += x->prev->_curSize;
+
                 return pos;
             }  //attention: this pos is 0-base
 
@@ -209,7 +207,7 @@ namespace sjtu {
                     news.nowBlock = news.nowBlock->next;
                 }
 
-                if (news.nowBlock->_curSize == 0)
+                if (news.nowBlock->_curSize == 0 && cnt!=n)
                     throw invalid_iterator();
 
                 news.nowNode = news.nowBlock->head->next;
@@ -242,7 +240,7 @@ namespace sjtu {
                     news.nowBlock = news.nowBlock->prev;
                 }
 
-                if (news.nowBlock->_curSize == 0)
+                if (news.nowBlock->_curSize == 0 && cnt!=n)
                     throw invalid_iterator();
 
                 news.nowNode = news.nowBlock->tail->prev;
@@ -260,19 +258,17 @@ namespace sjtu {
             }
 
             iterator &operator+=(const int &n) {
-                iterator tmp = this + n;
+                iterator tmp = operator+(n);
                 nowBlock = tmp.nowBlock;
-                nowNode = tmp.nowdeque;
+                nowNode = tmp.nowNode;
                 return *this;
             }
 
             iterator &operator-=(const int &n) {
-                iterator tmp = this - n;
+                iterator tmp = operator-(n);
                 nowBlock = tmp.nowBlock;
-                nowNode = tmp.nowdeque;
+                nowNode = tmp.nowNode;
                 return *this;
-
-
             }
 
             const iterator operator++(int) {
@@ -353,32 +349,28 @@ namespace sjtu {
             }
 
             bool operator!=(const const_iterator &rhs) const {
-                return nowNode == rhs.nowNode;
+                return nowNode != rhs.nowNode;
             }
         };
 
         class const_iterator {
         private:
-            deque *nowdeque;
-            Block *nowBlock;
-            Node *nowNode;
+            const deque *nowdeque;
+            const Block *nowBlock;
+            const Node *nowNode;
 
         public:
-            explicit const_iterator(deque *a1 = nullptr, Block *a2 = nullptr, Node *a3 = nullptr) {
-                nowdeque = a1;
-                nowBlock = a2;
-                nowNode = a3;
-            }
+            explicit const_iterator(const deque *a1 = nullptr, const Block *a2 = nullptr, const Node *a3 = nullptr):nowdeque(a1),nowBlock(a2),nowNode(a3){}
             const_iterator(const const_iterator &other) = default;
             explicit const_iterator(const iterator &other):nowdeque(other.nowdeque), nowBlock(other.nowBlock), nowNode(other.nowNode) {}
 
         public:
             int getPos() const {
                 int pos = 0;
-                for (auto x = nowNode; x.prev != nowBlock->head; x = x->prev)
+                for (auto x = nowNode; x->prev!= nowBlock->head; x = x->prev)
                     pos++;
                 for (auto x = nowBlock; x->prev != nowdeque->head; x = x->prev)
-                    pos += nowBlock->prev->_curSize;
+                    pos += x->prev->_curSize;
                 return pos;
             }  //attention: this pos is 0-base
 
@@ -403,7 +395,7 @@ namespace sjtu {
                     news.nowBlock = news.nowBlock->next;
                 }
 
-                if (news.nowBlock->_curSize == 0)
+                if (news.nowBlock->_curSize == 0 && cnt!=n)
                     throw invalid_iterator();
 
                 news.nowNode = news.nowBlock->head->next;
@@ -436,7 +428,7 @@ namespace sjtu {
                     news.nowBlock = news.nowBlock->prev;
                 }
 
-                if (news.nowBlock->_curSize == 0)
+                if (news.nowBlock->_curSize == 0 && cnt!=n)
                     throw invalid_iterator();
 
                 news.nowNode = news.nowBlock->tail->prev;
@@ -454,19 +446,17 @@ namespace sjtu {
             }
 
             const_iterator &operator+=(const int &n) {
-                const_iterator tmp = this + n;
+                const_iterator tmp = operator+(n);
                 nowBlock = tmp.nowBlock;
-                nowNode = tmp.nowdeque;
+                nowNode = tmp.nowNode;
                 return *this;
             }
 
             const_iterator &operator-=(const int &n) {
-                const_iterator tmp = this - n;
+                const_iterator tmp = operator-(n);
                 nowBlock = tmp.nowBlock;
-                nowNode = tmp.nowdeque;
+                nowNode = tmp.nowNode;
                 return *this;
-
-
             }
 
             const const_iterator operator++(int) {
@@ -547,7 +537,7 @@ namespace sjtu {
             }
 
             bool operator!=(const const_iterator &rhs) const {
-                return nowNode == rhs.nowNode;
+                return nowNode != rhs.nowNode;
             }
         };
 
@@ -587,7 +577,7 @@ namespace sjtu {
             if (this == &other) return *this;
 
             clear();  //though clear, but in my settings, head and tail remained
-
+            curSize = other.curSize;
             for (auto x = other.head->next; x != other.tail; x = x->next) {
 
                 auto news = Block::Copy(x);
@@ -598,7 +588,6 @@ namespace sjtu {
                 tail->prev = news;
                 news->next = tail;
             }
-            curSize = other.curSize;
             return *this;
         }
 
@@ -729,7 +718,7 @@ namespace sjtu {
             priNode->prev=newNode;
 
             if(toSplit(tmp->_curSize)){
-                tmp->Split((tmp->_curSize)/2);
+                tmp->Split((tmp->_curSize)>>1);
             }
             for(auto x=tmp->head->next;x!=tmp->tail;x=x->next){
                 if(x==newNode)
@@ -745,9 +734,9 @@ namespace sjtu {
          * throw if the container is empty, the iterator is invalid or it points to a wrong place.
          */
         iterator erase(iterator pos) {
-            if (pos.nowNode == nullptr || pos.nowNode->v == nullptr|| pos.nowdeque!=this)
+            if (pos.nowdeque!=this)
                 throw invalid_iterator();
-
+            *pos;
             curSize--;
 
             auto priBlock=pos.nowBlock;
@@ -767,14 +756,8 @@ namespace sjtu {
                 return news;
             }      //specially the Block size==0;
 
-            bool flag=false;
-            Node* nextNode;
-            if(priNode->next==priBlock->tail) {
-                nextNode = priBlock->next->head->next;
-                flag=true;
-            }
-            else
-                nextNode=priNode->next;    //get the nextNode
+            bool flag=priNode->next==priBlock->tail;
+            Node* nextNode=flag?priBlock->next->head->next:priNode->next;    //get the nextNode
 
             priNode->next->prev=priNode->prev;
             priNode->prev->next=priNode->next;   //link the prev and next of the erase Node
@@ -791,9 +774,8 @@ namespace sjtu {
                     return iterator(this,newBlock,nextNode);
                 }
             }else if(priBlock->next!=tail && toMerge(priBlock->_curSize + priBlock->next->_curSize)){
-                auto newBlock=priBlock;
-                newBlock->Merge();
-                return iterator(this,newBlock,nextNode);
+                priBlock->Merge();
+                return iterator(this,priBlock,nextNode);
             }else{
                 if(flag){
                     return iterator(this,priBlock->next,nextNode);
@@ -803,19 +785,9 @@ namespace sjtu {
             }
         }
 
-
         void push_back(const T &value) {
             curSize++;
-            if (curSize != 1 && !toSplit(tail->prev->_curSize)) {
-                tail->prev->_curSize++;
-                auto tmp = new Node;
-                tmp->v = new T(value);
-
-                tail->prev->tail->prev->next = tmp;
-                tmp->prev = tail->prev->tail->prev;
-                tmp->next = tail->prev->tail;
-                tail->prev->tail->prev = tmp;
-            } else {  //a new Block
+            if (curSize == 1 || toNew(tail->prev->_curSize)) {
                 auto tmp = new Node;
                 tmp->v = new T(value);
                 auto news = new Block;
@@ -831,6 +803,16 @@ namespace sjtu {
                 tail->prev = news;
 
                 news->_curSize = 1;
+            }else {
+                tail->prev->_curSize++;
+                auto tmp = new Node;
+                tmp->v = new T(value);
+
+                tail->prev->tail->prev->next = tmp;
+                tmp->prev = tail->prev->tail->prev;
+                tmp->next = tail->prev->tail;
+                tail->prev->tail->prev = tmp;
+
             }
         }
 
@@ -863,16 +845,7 @@ namespace sjtu {
 
         void push_front(const T &value) {
             curSize++;
-            if (curSize != 1 && !toSplit(tail->prev->_curSize)) {
-                head->next->_curSize++;
-                auto tmp = new Node;
-                tmp->v = new T(value);
-
-                head->next->head->next->prev = tmp;
-                tmp->next = head->next->head->next;
-                tmp->prev = head->next->head;
-                head->next->head->next = tmp;
-            } else {
+            if (curSize == 1 || toNew(tail->prev->_curSize)) {
                 auto tmp = new Node;
                 tmp->v = new T(value);
                 auto news = new Block;
@@ -888,6 +861,16 @@ namespace sjtu {
                 head->next = news;
 
                 news->_curSize = 1;
+            } else {
+
+                head->next->_curSize++;
+                auto tmp = new Node;
+                tmp->v = new T(value);
+
+                head->next->head->next->prev = tmp;
+                tmp->next = head->next->head->next;
+                tmp->prev = head->next->head;
+                head->next->head->next = tmp;
             }
 
         }
