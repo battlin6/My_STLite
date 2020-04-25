@@ -25,14 +25,14 @@ namespace sjtu {
          * Judge whether to split or merge
          * */
         bool toSplit(const int &k) {
-            return k > 10 && k > int(2.89* std::sqrt(curSize));
+            return k > 20 && k > int(3.12* std::sqrt(curSize));
         }
         bool toNew(const int &k){
-            return k > 10 && k > int(1.98* std::sqrt(curSize));
+            return k > 20 && k > int(2.58* std::sqrt(curSize));
         }
 
         bool toMerge(const int &k) {
-            return k < int(0.48 * std::sqrt(curSize));
+            return k < int(0.6 * std::sqrt(curSize));
         }
 
     private:
@@ -83,11 +83,35 @@ namespace sjtu {
             }  //copy //attention the memory
 
             void Merge() {
+/*
+                auto curNode = next->head->next;
+
+                while(curNode!=next->tail){
+                    auto newNode =new Node;
+                    newNode->v = new T(*(curNode->v));
+
+                    newNode->prev=tail->prev;
+                    tail->prev->next=newNode;
+
+                    newNode->next=tail;
+                    tail->prev=newNode;
+
+                    _curSize++;
+
+                    curNode=curNode->next;
+                }
+
+                Block *tmp = next;
+                tmp->next->prev = this;
+                next = tmp->next;
+                delete tmp;
+                */
 
                 Node *x2 = tail, *x3 = next->head;
 
                 x2->prev->next = x3->next;
                 x3->next->prev = x2->prev;
+
                 delete x2, x3;
 
                 tail = next->tail;
@@ -331,8 +355,7 @@ namespace sjtu {
             }
 
             T *operator->() const noexcept {
-                if (nowNode == nullptr || nowNode->v == nullptr)
-                    throw invalid_iterator();
+                //if (nowNode == nullptr || nowNode->v == nullptr) throw invalid_iterator();
                 return nowNode->v;
             }
 
@@ -512,15 +535,14 @@ namespace sjtu {
                 return *this;
             }
 
-            T &operator*() const {
+            const T &operator*() const {
                 if (nowNode == nullptr || nowNode->v == nullptr)
                     throw invalid_iterator();
                 return *(nowNode->v);
             }
 
-            T *operator->() const noexcept {
-                if (nowNode == nullptr || nowNode->v == nullptr)
-                    throw invalid_iterator();
+            const T *operator->() const noexcept {
+                //if (nowNode == nullptr || nowNode->v == nullptr) throw invalid_iterator();
                 return nowNode->v;
             }
 
@@ -602,41 +624,77 @@ namespace sjtu {
         T &operator[](const size_t &pos) {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
+            if(pos<curSize/2) {
+                Block *curBlock = head->next;
+                int curPos = 0;
 
-            Block *curBlock = head->next;
-            int curPos = 0;
+                while (curPos + curBlock->_curSize <= pos) {
+                    curPos += curBlock->_curSize;
+                    curBlock = curBlock->next;
+                }
 
-            while (curPos + curBlock->_curSize <= pos) {
-                curPos += curBlock->_curSize;
-                curBlock = curBlock->next;
+                Node *curNode = curBlock->head->next;
+                while (curPos < pos) {
+                    curPos++;
+                    curNode = curNode->next;
+                }
+                return *(curNode->v);
+            }else{
+                int Pos=curSize-pos-1;
+                Block *curBlock =tail->prev;
+                int curPos=0;
+
+                while(curPos+curBlock->_curSize<=Pos){
+                    curPos+=curBlock->_curSize;
+                    curBlock=curBlock->prev;
+                }
+
+                Node *curNode = curBlock->tail->prev;
+                while(curPos<Pos){
+                    curPos++;
+                    curNode=curNode->prev;
+                }
+                return *(curNode->v);
             }
 
-            Node *curNode = curBlock->head->next;
-            while (curPos < pos) {
-                curPos++;
-                curNode = curNode->next;
-            }
-            return *(curNode->v);
         }
 
         const T &operator[](const size_t &pos) const {
             if (pos < 0 || pos >= curSize)
                 throw index_out_of_bound();
 
-            Block *curBlock = head->next;
-            int curPos = 0;
+            if(pos<curSize/2) {
+                Block *curBlock = head->next;
+                int curPos = 0;
 
-            while (curPos + curBlock->_curSize <= pos) {
-                curPos += curBlock->_curSize;
-                curBlock = curBlock->next;
-            }
+                while (curPos + curBlock->_curSize <= pos) {
+                    curPos += curBlock->_curSize;
+                    curBlock = curBlock->next;
+                }
 
-            Node *curNode = curBlock->head->next;
-            while (curPos < pos) {
-                curPos++;
-                curNode = curNode->next;
+                Node *curNode = curBlock->head->next;
+                while (curPos < pos) {
+                    curPos++;
+                    curNode = curNode->next;
+                }
+                return *(curNode->v);
+            }else{
+                int Pos=curSize-pos-1;
+                Block *curBlock =tail->prev;
+                int curPos=0;
+
+                while(curPos+curBlock->_curSize<=Pos){
+                    curPos+=curBlock->_curSize;
+                    curBlock=curBlock->prev;
+                }
+
+                Node *curNode = curBlock->tail->prev;
+                while(curPos<Pos){
+                    curPos++;
+                    curNode=curNode->prev;
+                }
+                return *(curNode->v);
             }
-            return *(curNode->v);
         }
 
         const T &front() const {
