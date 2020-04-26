@@ -18,19 +18,34 @@ public:
      * use RB-Tree to complete map
      * */
 	typedef pair<const Key, T> value_type;
-	/**
-	 * see BidirectionalIterator at CppReference for help.
-	 *
-	 * if there is anything wrong throw invalid_iterator.
-	 *     like it = map.begin(); --it;
-	 *       or it = map.end(); ++end();
-	 */
+
 private:
     enum ColorType{Red,Black};
     struct Node{
         Node *prev,next;
         Node *fa,*child[2];
         ColorType color;
+        value_type *value;
+        bool ok;
+
+        Node():value(nullptr){}
+        Node(Node *other, Node* fa,Node *prev,Node *next):
+            value(new value_type(*(other->value))),fa(fa),
+            prev(prev),next(next),ok(other->ok),color(other->color){
+            chlid[0]=child[1]= nullptr;
+            prev->next=next->prev=this;
+            if(other->child[0]!= nullptr)
+                child[0]= new Node(other->child[0],this,prev,this);
+            //else child[0]= nullptr;
+            if(other->child[1]!= nullptr)
+                child[1]= new Node(other->child[1],this,this,next);
+            //else child[1]= nullptr;
+        }
+
+        ~Node(){
+            delete value;
+        }
+
     };
 
 public:

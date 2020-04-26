@@ -6,69 +6,35 @@
 
 #IncludeRegexTransform: 
 
-D:/Project/Clion Project/My_STLite/deque/data/class-bint.hpp
-string
--
-iostream
--
-cstring
--
-cstdlib
--
-vector
--
-stdexcept
--
-iomanip
--
-algorithm
--
-
-D:/Project/Clion Project/My_STLite/deque/data/class-integer.hpp
-
-D:/Project/Clion Project/My_STLite/deque/data/class-matrix.hpp
-iostream
--
-iomanip
--
-vector
--
-stdexcept
--
-
-D:/Project/Clion Project/My_STLite/deque/deque.hpp
-exceptions.hpp
-D:/Project/Clion Project/My_STLite/deque/exceptions.hpp
-cstddef
--
-cmath
--
-
-D:/Project/Clion Project/My_STLite/deque/exceptions.hpp
-cstddef
--
-cstring
--
-string
--
-
 D:/Project/Clion Project/My_STLite/main.cpp
+mapA/map.hpp
+D:/Project/Clion Project/My_STLite/mapA/map.hpp
 iostream
 -
-ctime
+cassert
 -
-vector
+string
 -
-deque
+
+D:/Project/Clion Project/My_STLite/mapA/exceptions.hpp
+cstddef
 -
-random
+cstring
 -
-deque/data/class-integer.hpp
-D:/Project/Clion Project/My_STLite/deque/data/class-integer.hpp
-deque/data/class-matrix.hpp
-D:/Project/Clion Project/My_STLite/deque/data/class-matrix.hpp
-deque/data/class-bint.hpp
-D:/Project/Clion Project/My_STLite/deque/data/class-bint.hpp
-deque/deque.hpp
-D:/Project/Clion Project/My_STLite/deque/deque.hpp
+string
+-
+
+D:/Project/Clion Project/My_STLite/mapA/map.hpp
+functional
+-
+cstddef
+-
+utility.hpp
+D:/Project/Clion Project/My_STLite/mapA/utility.hpp
+exceptions.hpp
+D:/Project/Clion Project/My_STLite/mapA/exceptions.hpp
+
+D:/Project/Clion Project/My_STLite/mapA/utility.hpp
+utility
+-
 
