@@ -14,6 +14,9 @@ namespace sjtu {
 
 template<class Key,class T,class Compare = std::less<Key>> class map {
 public:
+    /*
+     * use RB-Tree to complete map
+     * */
 	typedef pair<const Key, T> value_type;
 	/**
 	 * see BidirectionalIterator at CppReference for help.
@@ -22,7 +25,15 @@ public:
 	 *     like it = map.begin(); --it;
 	 *       or it = map.end(); ++end();
 	 */
+private:
+    enum ColorType{Red,Black};
+    struct Node{
+        Node *prev,next;
+        Node *fa,*child[2];
+        ColorType color;
+    };
 
+public:
 	class const_iterator;
 	class iterator {
 	private:
