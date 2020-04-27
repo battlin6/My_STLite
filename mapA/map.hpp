@@ -10,6 +10,7 @@
 #include <regex>
 #include "utility.hpp"
 #include "exceptions.hpp"
+using namespace sjtu;
 
 namespace sjtu {
 
@@ -284,6 +285,23 @@ private:
         swap(fa->color,brother->color);
         cousin[!(x->ok)]->color=Black;
         rotate(fa,x->ok);
+    }
+
+    pair<Node *,bool> insert(const Key &key,const T &value){
+        if(root== nullptr){
+            Node *newNode = new Node (value,head,tail, nullptr, nullptr, nullptr,0);
+            root = newNode;
+            curSize++;
+            up(newNode);
+            return {newNode,true};
+        }
+
+        Node *curNode=root;
+        bool cas;
+        while(true){
+            cas = compare_func(curNode->value->first,key);  //todo
+            if(!cas && )
+        }
     }
 
 public:
