@@ -7,6 +7,7 @@
 // only for std::less<T>
 #include <functional>
 #include <cstddef>
+#include <regex>
 #include "utility.hpp"
 #include "exceptions.hpp"
 
@@ -19,6 +20,13 @@ public:
      * */
 	typedef pair<const Key, T> value_type;
 
+	template <class U>
+	void swap(U &a,U &b){
+	    U temp=a;
+	    a=b;
+	    b=temp;
+	}  //define a
+
 private:
     enum ColorType{Red,Black};
     struct Node{
@@ -26,13 +34,13 @@ private:
         Node *fa,*child[2];
         ColorType color;
         value_type *value;
-        bool ok;
+        bool ok;  //ok==0 is left child, ok==1 is right child
 
         Node():value(nullptr){}
         Node(Node *other, Node* fa,Node *prev,Node *next):
             value(new value_type(*(other->value))),fa(fa),
             prev(prev),next(next),ok(other->ok),color(other->color){
-            chlid[0]=child[1]= nullptr;
+            child[0]=child[1]= nullptr;
             prev->next=next->prev=this;
             if(other->child[0]!= nullptr)
                 child[0]= new Node(other->child[0],this,prev,this);
@@ -41,11 +49,32 @@ private:
                 child[1]= new Node(other->child[1],this,this,next);
             //else child[1]= nullptr;
         }
+        Node(const value_type &value,Node *prev,Node* next,Node *fa,Node *lc,Node *rc,bool ok)
+            :value(new value_type(value)),prev(prev),next(next),fa(fa),ok(ok),color(Red){
+            child[0]=lc,child[1]=rc;
+            complish();
+        }
+        Node(const Key &key,Node *prev,Node *next,Node* fa,Node *lc,Node* rc,bool ok)
+            :Node(value_type(key,T()),prev,next,fa,lc,rc,ok){}
 
+        void complish(){
+            next->prev = prev->next = this;
+            if(fa!= nullptr) fa->child[ok]=this;
+            if(child[0]!= nullptr){
+                child[0]->fa=this;
+                child[0]->ok=0;
+            }
+            if(child[1]!= nullptr){
+                child[1]->fa=this;
+                child[1]->ok=1;
+            }
+        }
+        Node *brother(){
+            return fa->child[!ok];
+        }
         ~Node(){
             delete value;
         }
-
     };
 
 public:
@@ -116,6 +145,34 @@ public:
 			// And other methods in iterator.
 			// And other methods in iterator.
 	};
+
+private:
+    Node *head,*tail, *root;
+    size_t curSize;
+    Compare compare_func;
+
+    static void link(Node *a,Node *b){
+        a->next=b;
+        b->prev=a;
+    } //link the prev and next;
+
+    void Swap_Node(Node* a,Node* b){
+        if(root==a)
+            root=b;
+        else if(root==b)
+            root=a;
+
+        swap(a->prev,b->prev);
+        swap()
+    }//swap two Node in a map
+
+    void Rotate(){
+
+    }//rotate
+
+public:
+
+
 	/**
 	 * TODO two constructors
 	 */
