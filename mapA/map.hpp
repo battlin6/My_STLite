@@ -163,12 +163,102 @@ private:
             root=a;
 
         swap(a->prev,b->prev);
-        swap()
+        swap(a->next,b->next);
+        swap(a->fa,b->fa);
+        swap(a->child[0],b->child[0]);
+        swap(a->child[1],b->child[1]);
+        swap(a->color,b->color);
+        swap(a->ok,b->ok);
+
+        // problem?? if a is close to b
+        if (a->prev == a) a->prev = b;
+        if (a->next == a) a->next = b;
+        if (a->father == a) a->father = b;
+        if (a->child[0] == a) a->child[0] = b;
+        if (a->child[1] == a) a->child[1] = b;
+
+        if (b->prev == b) b->prev = a;
+        if (b->next == b) b->next = a;
+        if (b->father == b) b->father = a;
+        if (b->child[0] == b) b->child[0] = a;
+        if (b->child[1] == b) b->child[1] = a;
+
+
+        a->complish(),b->complish();
     }//swap two Node in a map
 
-    void Rotate(){
+    void Rotate(Node *x, bool ok){
+        Node *y =x->child[!ok];
+        if(root==x) root=y;
 
+        x->child[!ok]=y->child[ok];
+        y->fa=x->fa;
+        y->ok=x->ok;
+        x->fa=y;
+        x->ok=ok;
+
+        x->complish(),y->complish();
     }//rotate
+
+    void up(Node *x){
+        Node *fa=x->fa;
+        if(fa== nullptr){
+            x->color=Black;
+            return;
+        }
+
+        if(fa->color==Black) return;
+
+        Node *grandpa=fa->fa;
+        Node *uncle=x->fa->brother();
+
+        if(uncle== nullptr||uncle->color==Black){
+            if(x->ok==fa->ok){
+                fa->color=Black;
+                grandpa->color=Red;
+                Rotate(grandpa,!(x->ok));
+            }else{
+                x->fa=Black;
+                grandpa->color=Red;
+                Rotate(fa,!(x->ok));
+                Rotate(grandpa,!(x->ok));
+            }
+        }else{
+            fa->color=uncle->color =Black;
+            grandpa->color=Red;
+            up(grandpa);
+        }
+    }
+
+    void down(Node *x, bool cas=false){
+        if(x->color==Red && !cas) return;
+
+        Node *child =x->child[x->child[0]== nullptr];   //get a non-nullptr
+
+        if(child!= nullptr && child->color==Red && !cas){
+            child->color=Black;
+            return;
+        }
+
+        if(root==x){
+            x->color=Black;
+            return;
+        }
+
+        Node *fa=x->fa;
+        Node *brother=x->brother();
+        Node **cousin=brother->child;  //two side array
+
+        if(fa->color==Black && brother->color ==Black &&
+        (cousin[0] == nullptr || cousin[0]->color == Black) &&
+        (cousin[1] == nullptr || cousin[1]->color == Black)){
+            brother->color= Red;
+            down(fa,true);
+            return;
+        }
+
+
+    }
 
 public:
 
