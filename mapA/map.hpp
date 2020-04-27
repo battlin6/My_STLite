@@ -257,7 +257,33 @@ private:
             return;
         }
 
+        if(brother->color== Red){
+            fa->color=Red;
+            brother->color=Black;
+            Rotate(fa,x->ok);
+            brother=x->brother();
+            cousin=brother->child;
+        }
 
+        if(fa->color==Red && brother->color==Black &&
+        (cousin[0] == nullptr || cousin[0]->color == Black) &&
+        (cousin[1] == nullptr || cousin[1]->color == Black)){
+            fa->color=Black;
+            brother->color=Red;
+            return;
+        }
+
+        if(cousin[!(x->ok)]== nullptr || cousin[!(x->ok)]->color==Black){
+            cousin[x->ok]->color=Black;
+            brother->color=Red;
+            Rotate(brother ,!(x->ok));
+            brother=x->brother();
+            cousin=brother->child;
+        }
+
+        swap(fa->color,brother->color);
+        cousin[!(x->ok)]->color=Black;
+        rotate(fa,x->ok);
     }
 
 public:
