@@ -1,4 +1,4 @@
-#include "mapA/map1.hpp"
+#include "mapA/map.hpp"
 #include <iostream>
 #include <cassert>
 #include <string>

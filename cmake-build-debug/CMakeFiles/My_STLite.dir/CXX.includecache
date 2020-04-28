@@ -7,8 +7,8 @@
 #IncludeRegexTransform: 
 
 D:/Project/Clion Project/My_STLite/main.cpp
-mapA/map.hpp
-D:/Project/Clion Project/My_STLite/mapA/map.hpp
+mapA/map1.hpp
+D:/Project/Clion Project/My_STLite/mapA/map1.hpp
 iostream
 -
 cassert
@@ -24,7 +24,7 @@ cstring
 string
 -
 
-D:/Project/Clion Project/My_STLite/mapA/map.hpp
+D:/Project/Clion Project/My_STLite/mapA/map1.hpp
 functional
 -
 cstddef

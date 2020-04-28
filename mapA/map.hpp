@@ -287,7 +287,8 @@ private:
         rotate(fa,x->ok);
     }
 
-    pair<Node *,bool> insert(const Key &key,const T &value){
+    template <class O>
+    pair<Node *,bool> Insert(const Key &key,const O &value){
         if(root== nullptr){
             Node *newNode = new Node (value,head,tail, nullptr, nullptr, nullptr,0);
             root = newNode;
@@ -300,8 +301,43 @@ private:
         bool cas;
         while(true){
             cas = compare_func(curNode->value->first,key);  //todo
-            if(!cas && )
+            if(!cas && !compare_func(key,curNode->value->first)) return {curNode,false};
+            if(curNode->child[cas]== nullptr) break;
+            curNode=curNode->child[cas];
         }
+
+        Node *newNode = new Node(value,cas?curNode:curNode->prev,cas?curNode->next:curNode,curNode, nullptr, nullptr,cas);
+        curSize++;
+        up(newNode);
+        return {newNode,true};
+    }
+
+    pair<Node*,bool> Insert(const value_type &value){
+        return Insert(value.first,value);
+    }
+
+    Node * Insert(const Key &key){
+        return Insert(key,key).first;
+    }
+
+    void Erase(Node *x){
+        curSize--;
+        if(x->child[0]!= nullptr && x->child[1]!= nullptr){
+            swap(x,x->next);
+        }
+        down(x);
+        link(x->prev,x->next);
+
+        Node *child=x->child[x->child[0]== nullptr];
+        if(x==root) root=child;
+        else x->fa->child[x->ok]=child;
+
+        if(child!= nullptr){
+            child->fa=x->fa;
+            child->ok=x->ok;
+        }
+
+        delete x;
     }
 
 public:
