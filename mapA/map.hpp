@@ -26,7 +26,7 @@ public:
 	    U temp=a;
 	    a=b;
 	    b=temp;
-	}  //define a
+	}  //define a swap function
 
 private:
     enum ColorType{Red,Black};
@@ -323,7 +323,7 @@ private:
     void Erase(Node *x){
         curSize--;
         if(x->child[0]!= nullptr && x->child[1]!= nullptr){
-            swap(x,x->next);
+            Swap_Node(x,x->next);
         }
         down(x);
         link(x->prev,x->next);
