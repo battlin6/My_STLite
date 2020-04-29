@@ -341,21 +341,30 @@ private:
     }
 
 public:
+	map():head(new Node),tail(new Node),root(nullptr),curSize(0){
+        head->next=tail;
+        tail->prev=head;
+        }
+	map(const map &other):map(){
+        if(other.curSize==0) return;
+        curSize=other.curSize;
+        root= new Node(other.root, nullptr,head,tail);
+    }
 
+	map & operator=(const map &other) {
+        if(this==&other) return *this;
+        clear();
+        curSize=other.curSize;
+        if(other.curSize==0) return *this;
+        root= new Node (other.root, nullptr,head,tail);
+        return *this;
+    }
 
-	/**
-	 * TODO two constructors
-	 */
-	map() {}
-	map(const map &other) {}
-	/**
-	 * TODO assignment operator
-	 */
-	map & operator=(const map &other) {}
-	/**
-	 * TODO Destructors
-	 */
-	~map() {}
+	~map() {
+        clear();
+        delete head;
+        delete tail;
+    }
 	/**
 	 * TODO
 	 * access specified element with bounds checking
