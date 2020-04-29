@@ -1,9 +1,7 @@
-// Provided by Zhenjia Xu
-
-#include <iostream>
-#include <cstdio>
-#include <algorithm>
-#include <cstring>
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cstring>
 #include "mapA/map.hpp"
 long long aa=13131,bb=5353,MOD=(long long)(1e9+7),now=1;
 int rand()
@@ -17,6 +15,9 @@ public:
     int x;
     Key(const Key &other):x(other.x){}
     Key(int x):x(x){}
+    int num()const{
+        return x;
+    }
 };
 class Data{
 public:
@@ -32,20 +33,15 @@ public:
         *x = *(other.x);
         return *this;
     }
+    int num()const{
+        return *x;
+    }
 };
-std::ostream &operator <<(std::ostream &os, const Data &a){
-    os<<*(a.x);
-    return os;
-}
-std::ostream &operator <<(std::ostream &os, const Key &a){
-    os<<(a.x);
-    return os;
-}
 struct cmp{
     bool operator ()(const Key &a,const Key &b)const{return a.x > b.x;}
 };
 sjtu::map<Key,Data,cmp> map;
-int num = 1000;
+int num = 5000;
 void test_insert(){
     puts("Test: insert");
     std::cout<<"empty:"<<map.empty()<<std::endl;
@@ -66,26 +62,26 @@ void test_insert(){
         Key key(rand() % 10000);
         Data data(rand());
         sjtu::pair<sjtu::map<Key,Data,cmp>::iterator,bool> it = map.insert(sjtu::map<Key,Data,cmp>::value_type(key,data));
-        if (it.second) std::cout<<it.first->second<<' ';
+        if (it.second) std::cout<<(it.first->second).num()<<' ';
         else std::cout<<"0 ";
     }
     puts("");
     for(int i=1;i<=num;i++){
         int tmp(rand() % 10000);
-        std::cout<<map[Key(tmp)]<<' ';
+        std::cout<<(map[Key(tmp)]).num()<<' ';
     }
     puts("");
     for(int i=1;i<=num;i++){
         int tmp(rand() % 10000);
         try{
-            std::cout<<map.at(Key(tmp))<<' ';
+            std::cout<<(map.at(Key(tmp))).num()<<' ';
         }catch(...){}
     }
     puts("");
 }
 void Print(){
     for(sjtu::map<Key,Data,cmp>::const_iterator it(map.cbegin());it!=map.cend();++it)
-        std::cout<<it->first<<' '<<(*it).second<<' ';
+        std::cout<<(it->first).num()<<' '<<((*it).second).num()<<' ';
     puts("");
 }
 void test_erase(){
@@ -104,7 +100,14 @@ void test_const_at(){
     for(int i=1;i<=num;i++){
         int tmp(rand() % 10000);
         try{
-            std::cout<<mm.at(Key(tmp))<<' ';
+            std::cout<<(mm.at(Key(tmp))).num()<<' ';
+        }catch(...){}
+    }
+
+    for(int i=1;i<=num;i++){
+        int tmp(rand() % 10000);
+        try{
+            std::cout<<(mm[Key(tmp)]).num()<<' ';
         }catch(...){}
     }
     puts("");
@@ -127,7 +130,7 @@ void test_find(){
         int tmp(rand() % 10000);
         sjtu::map<Key,Data,cmp>::iterator it(map.find(Key(tmp)));
         if(it == map.end()) std::cout<<"END ";
-        else std::cout<<it->first<<' '<<it->second<<' ';
+        else std::cout<<(it->first).num()<<' '<<(it->second).num()<<' ';
     }
     puts("");
 
@@ -135,7 +138,7 @@ void test_find(){
         int tmp(rand() % 10000);
         sjtu::map<Key,Data,cmp>::const_iterator it(mm.find(Key(tmp)));
         if(it == mm.cend()) std::cout<<"END ";
-        else std::cout<<it->first<<' '<<it->second<<' ';
+        else std::cout<<(it->first).num()<<' '<<(it->second).num()<<' ';
     }
     puts("");
 }
@@ -202,9 +205,30 @@ void test_copy()
     sjtu::map<Key,Data,cmp>::iterator it1(m1.begin()),it2(m2.begin());
     for(;it1!=m1.end() || it2!=m2.end();it1++,it2++)
     {
-        std::cout<<it1->first<<' '<<it1->second<<' '<<it2->first<<' '<<it2->second<<' ';
+        std::cout<<(it1->first).num()<<' '<<(it1->second).num()<<' '<<(it2->first).num()<<' '<<(it2->second).num()<<' ';
     }
     puts("");
+}
+void test_iterator()
+{
+    sjtu::map<Key,Data,cmp>::iterator it1 = map.begin();
+    for(int i=1;i<=3;i++)
+    {
+        int tmp = rand() % 5;
+        while (tmp--)
+        {
+            try{
+                sjtu::map<Key,Data,cmp>::const_iterator it2(it1++);
+                sjtu::map<Key,Data,cmp>::const_iterator it3(++it1);
+                sjtu::map<Key,Data,cmp>::iterator it4(it1++);
+                sjtu::map<Key,Data,cmp>::iterator it5(++it1);
+                std::cout<<(it2->first).num()<<' '<<(it2->second).num()<<std::endl;
+                std::cout<<(it3->first).num()<<' '<<(it3->second).num()<<std::endl;
+                std::cout<<(it4->first).num()<<' '<<(it4->second).num()<<std::endl;
+                std::cout<<((*it5).first).num()<<' '<<((*it5).second).num()<<std::endl;
+            }catch(...){}
+        }
+    }
 }
 int main(){
     test_insert();
@@ -212,7 +236,6 @@ int main(){
     test_const_at();
     test_count();
     test_find();
-    //test_throw();
-    //test_const_throw();
     test_copy();
+    test_iterator();
 }

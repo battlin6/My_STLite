@@ -9,11 +9,23 @@
 D:/Project/Clion Project/My_STLite/main.cpp
 iostream
 -
+map
+-
+ctime
+-
+queue
+-
+cmath
+-
+vector
+-
 cstdio
 -
-algorithm
+cstdlib
 -
 cstring
+-
+algorithm
 -
 mapA/map.hpp
 D:/Project/Clion Project/My_STLite/mapA/map.hpp

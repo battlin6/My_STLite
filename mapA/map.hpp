@@ -141,7 +141,7 @@ public:
 		 * See <http://kelvinh.github.io/blog/2013/11/20/overloading-of-member-access-operator-dash-greater-than-symbol-in-cpp/> for help.
 		 */
 		value_type* operator->() const noexcept {
-		    if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+		    //if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
 		    return nowNode->value;
 		}
 	};
@@ -200,7 +200,7 @@ public:
         }
 
         value_type* operator->() const noexcept {
-            if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+            //if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
             return nowNode->value;
         }
 	};
