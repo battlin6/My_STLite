@@ -316,7 +316,7 @@ private:
         return Insert(value.first,value);
     }
 
-    Node * Insert(const Key &key){
+    Node* Insert(const Key &key){
         return Insert(key,key).first;
     }
 
