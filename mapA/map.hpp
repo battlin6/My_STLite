@@ -10,11 +10,11 @@
 #include <regex>
 #include "utility.hpp"
 #include "exceptions.hpp"
-using namespace sjtu;
+//using namespace sjtu;   //attention don't add it! cause ambiguous!
 
 namespace sjtu {
-
-template<class Key,class T,class Compare = std::less<Key>> class map {
+    template<class Key,class T,class Compare = std::less<Key>>
+              class map {
 public:
     /*
      * use RB-Tree to complete map
@@ -82,6 +82,7 @@ public:
 	class const_iterator;
 	class iterator {
 	    friend void map::erase(iterator);
+	    friend const_iterator;
 	private:
 		map *nowMap;
 		Node *nowNode;
@@ -90,7 +91,7 @@ public:
 		iterator(map *a1, Node *a2):nowMap(a1),nowNode(a2){};
 		iterator(const iterator &other)= default;
 		iterator &operator=(const iterator &other)= default;
-		explicit operator const_iterator(){
+		operator const_iterator(){
 		    return const_iterator(*this);
 		}
 
@@ -145,6 +146,7 @@ public:
 		}
 	};
 	class const_iterator {
+	    friend iterator;
 		private:
 			const map *nowMap;
             const Node *nowNode;

@@ -7,14 +7,16 @@
 #IncludeRegexTransform: 
 
 D:/Project/Clion Project/My_STLite/main.cpp
-mapA/map1.hpp
-D:/Project/Clion Project/My_STLite/mapA/map1.hpp
 iostream
 -
-cassert
+cstdio
 -
-string
+algorithm
 -
+cstring
+-
+mapA/map.hpp
+D:/Project/Clion Project/My_STLite/mapA/map.hpp
 
 D:/Project/Clion Project/My_STLite/mapA/exceptions.hpp
 cstddef
@@ -24,10 +26,12 @@ cstring
 string
 -
 
-D:/Project/Clion Project/My_STLite/mapA/map1.hpp
+D:/Project/Clion Project/My_STLite/mapA/map.hpp
 functional
 -
 cstddef
+-
+regex
 -
 utility.hpp
 D:/Project/Clion Project/My_STLite/mapA/utility.hpp
