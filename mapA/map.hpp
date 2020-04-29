@@ -81,11 +81,10 @@ private:
 public:
 	class const_iterator;
 	class iterator {
+	    friend void map::erase(iterator);
 	private:
-		/**
-		 * TODO add data members
-		 *   just add whatever you want.
-		 */
+		map *nowMap;
+		Node *nowNode;
 	public:
 		iterator() {
 			// TODO
@@ -365,25 +364,29 @@ public:
         delete head;
         delete tail;
     }
+
+	T & at(const Key &key) {
+	    iterator now= find(key);
+	    if(now==end()) throw index_out_of_bound();
+	    return now->second;
+	}
+	const T & at(const Key &key) const {
+        const_iterator now= find(key);
+        if(now==cend()) throw index_out_of_bound();
+        return now->second;
+    }
 	/**
-	 * TODO
-	 * access specified element with bounds checking
-	 * Returns a reference to the mapped value of the element with key equivalent to key.
-	 * If no such element exists, an exception of type `index_out_of_bound'
-	 */
-	T & at(const Key &key) {}
-	const T & at(const Key &key) const {}
-	/**
-	 * TODO
-	 * access specified element 
+	 * access specified element
 	 * Returns a reference to the value that is mapped to a key equivalent to key,
 	 *   performing an insertion if such key does not already exist.
 	 */
-	T & operator[](const Key &key) {}
-	/**
-	 * behave like at() throw index_out_of_bound if such key does not exist.
-	 */
-	const T & operator[](const Key &key) const {}
+	T & operator[](const Key &key) {
+	    return Insert(key)->value->second;
+	}
+
+	const T & operator[](const Key &key) const {
+	    return at(key);
+	}
 
 	iterator begin() {
 	    return iterator(this,head->next);
@@ -418,35 +421,45 @@ public:
 	    tail->prev=head;
 	    root= nullptr;
 	}
-	/**
-	 * insert an element.
-	 * return a pair, the first of the pair is
-	 *   the iterator to the new element (or the element that prevented the insertion), 
-	 *   the second one is true if insert successfully, or false.
-	 */
-	pair<iterator, bool> insert(const value_type &value) {}
-	/**
-	 * erase the element at pos.
-	 *
-	 * throw if pos pointed to a bad element (pos == this->end() || pos points an element out of this)
-	 */
-	void erase(iterator pos) {}
-	/**
-	 * Returns the number of elements with key 
-	 *   that compares equivalent to the specified argument,
-	 *   which is either 1 or 0 
-	 *     since this container does not allow duplicates.
-	 * The default method of check the equivalence is !(a < b || b > a)
-	 */
-	size_t count(const Key &key) const {}
-	/**
-	 * Finds an element with key equivalent to key.
-	 * key value of the element to search for.
-	 * Iterator to an element with key equivalent to key.
-	 *   If no such element is found, past-the-end (see end()) iterator is returned.
-	 */
-	iterator find(const Key &key) {}
-	const_iterator find(const Key &key) const {}
+
+	pair<iterator, bool> insert(const value_type &value) {
+	    auto result=Insert(value);
+	    return {iterator(this,result.first),result.second};
+	}
+
+	void erase(iterator pos) {
+	    if(pos.nowMap!=this||pos==end()) throw invalid_iterator();
+	    erase(pos.nowNode);
+	}
+
+	size_t count(const Key &key) const {
+	    return find(key)==cend()?0:1;
+	}
+
+	iterator find(const Key &key) {
+	    Node* curNode=root;
+	    while(curNode!= nullptr){
+	        if(compare_func(key,curNode->value->first))
+	            curNode=curNode->child[0];
+	        else if(compare_func(curNode->value->first,key))
+	            curNode=curNode->child[1];
+	        else
+	            return iterator(this,curNode);
+	    }
+	    return end();
+	}
+	const_iterator find(const Key &key) const {
+        Node* curNode=root;
+        while(curNode!= nullptr){
+            if(compare_func(key,curNode->value->first))
+                curNode=curNode->child[0];
+            else if(compare_func(curNode->value->first,key))
+                curNode=curNode->child[1];
+            else
+                return const_iterator(this,curNode);
+        }
+        return cend();
+	}
 };
 
 }
