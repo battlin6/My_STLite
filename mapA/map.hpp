@@ -395,19 +395,27 @@ public:
 	 */
 	iterator end() {}
 	const_iterator cend() const {}
-	/**
-	 * checks whether the container is empty
-	 * return true if empty, otherwise false.
-	 */
-	bool empty() const {}
-	/**
-	 * returns the number of elements.
-	 */
-	size_t size() const {}
-	/**
-	 * clears the contents
-	 */
-	void clear() {}
+
+	bool empty() const {
+	    return curSize==0;
+	}
+
+	size_t size() const {
+	    return curSize;
+	}
+
+	void clear() {
+	    curSize=0;
+	    Node * curNode =head->next;
+	    while(curNode!=tail){
+	        Node *tmp=curNode;
+	        curNode=curNode->next;
+	        delete tmp;
+	    }
+	    head->next=tail;
+	    tail->prev=head;
+	    root= nullptr;
+	}
 	/**
 	 * insert an element.
 	 * return a pair, the first of the pair is
