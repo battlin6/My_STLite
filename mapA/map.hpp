@@ -31,7 +31,7 @@ public:
 private:
     enum ColorType{Red,Black};
     struct Node{
-        Node *prev,next;
+        Node *prev,*next;
         Node *fa,*child[2];
         ColorType color;
         value_type *value;
@@ -145,23 +145,62 @@ public:
 		}
 	};
 	class const_iterator {
-		// it should has similar member method as iterator.
-		//  and it should be able to construct from an iterator.
 		private:
-			// data members.
+			const map *nowMap;
+            const Node *nowNode;
 		public:
-			const_iterator() {
-				// TODO
-			}
-			const_iterator(const const_iterator &other) {
-				// TODO
-			}
-			const_iterator(const iterator &other) {
-				// TODO
-			}
-			// And other methods in iterator.
-			// And other methods in iterator.
-			// And other methods in iterator.
+			const_iterator():nowMap(nullptr),nowNode(nullptr){}
+            const_iterator(const map* a1,const Node *a2):nowMap(a1),nowNode(a2){}
+			const_iterator(const const_iterator &other) = default;
+			explicit const_iterator(const iterator &other):nowMap(other.nowMap),nowNode(other.nowNode){}
+            const_iterator &operator=(const const_iterator &other) = default;
+
+        const_iterator operator++(int) {
+            const_iterator now(*this);
+            operator++();
+            return now;
+        }
+
+        const_iterator & operator++() {
+            if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+            nowNode=nowNode->next;
+            return *this;
+        }
+
+        const_iterator operator--(int) {
+            const_iterator now(*this);
+            operator--();
+            return now;
+        }
+
+        const_iterator & operator--() {
+            if(nowNode== nullptr||nowNode==nowMap->head->next) throw invalid_iterator();
+            nowNode=nowNode->prev;
+            return *this;
+        }
+
+        value_type & operator*() const {
+            return *operator->();
+        }
+
+        bool operator==(const iterator &rhs) const {
+            return nowNode==rhs.nowNode;
+        }
+        bool operator==(const const_iterator &rhs) const {
+            return nowNode==rhs.nowNode;
+        }
+
+        bool operator!=(const iterator &rhs) const {
+            return nowNode!=rhs.nowNode;
+        }
+        bool operator!=(const const_iterator &rhs) const {
+            return nowNode!=rhs.nowNode;
+        }
+
+        value_type* operator->() const noexcept {
+            if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+            return nowNode->value;
+        }
 	};
 
 private:
@@ -191,13 +230,13 @@ private:
         // problem?? if a is close to b
         if (a->prev == a) a->prev = b;
         if (a->next == a) a->next = b;
-        if (a->father == a) a->father = b;
+        if (a->fa == a) a->fa = b;
         if (a->child[0] == a) a->child[0] = b;
         if (a->child[1] == a) a->child[1] = b;
 
         if (b->prev == b) b->prev = a;
         if (b->next == b) b->next = a;
-        if (b->father == b) b->father = a;
+        if (b->fa == b) b->fa = a;
         if (b->child[0] == b) b->child[0] = a;
         if (b->child[1] == b) b->child[1] = a;
 
@@ -236,7 +275,7 @@ private:
                 grandpa->color=Red;
                 Rotate(grandpa,!(x->ok));
             }else{
-                x->fa=Black;
+                x->color=Black;
                 grandpa->color=Red;
                 Rotate(fa,!(x->ok));
                 Rotate(grandpa,!(x->ok));
@@ -301,7 +340,7 @@ private:
 
         swap(fa->color,brother->color);
         cousin[!(x->ok)]->color=Black;
-        rotate(fa,x->ok);
+        Rotate(fa,x->ok);
     }
 
     template <class O>
@@ -416,7 +455,7 @@ public:
 	    return iterator(this,tail);
 	}
 	const_iterator cend() const {
-	    return iterator(this,tail);
+	    return const_iterator(this,tail);
 	}
 
 	bool empty() const {
@@ -447,7 +486,7 @@ public:
 
 	void erase(iterator pos) {
 	    if(pos.nowMap!=this||pos==end()) throw invalid_iterator();
-	    erase(pos.nowNode);
+	    Erase(pos.nowNode);
 	}
 
 	size_t count(const Key &key) const {
