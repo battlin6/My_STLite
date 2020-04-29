@@ -384,17 +384,19 @@ public:
 	 * behave like at() throw index_out_of_bound if such key does not exist.
 	 */
 	const T & operator[](const Key &key) const {}
-	/**
-	 * return a iterator to the beginning
-	 */
-	iterator begin() {}
-	const_iterator cbegin() const {}
-	/**
-	 * return a iterator to the end
-	 * in fact, it returns past-the-end.
-	 */
-	iterator end() {}
-	const_iterator cend() const {}
+
+	iterator begin() {
+	    return iterator(this,head->next);
+	}
+	const_iterator cbegin() const {
+	    return const_iterator(this,head->next);
+	}
+	iterator end() {
+	    return iterator(this,tail);
+	}
+	const_iterator cend() const {
+	    return iterator(this,tail);
+	}
 
 	bool empty() const {
 	    return curSize==0;
