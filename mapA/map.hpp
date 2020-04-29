@@ -86,45 +86,63 @@ public:
 		map *nowMap;
 		Node *nowNode;
 	public:
-		iterator() {
-			// TODO
+		iterator():nowMap(nullptr),nowNode(nullptr){}
+		iterator(map *a1, Node *a2):nowMap(a1),nowNode(a2){};
+		iterator(const iterator &other)= default;
+		iterator &operator=(const iterator &other)= default;
+		explicit operator const_iterator(){
+		    return const_iterator(*this);
 		}
-		iterator(const iterator &other) {
-			// TODO
-		}
-		/**
-		 * TODO iter++
-		 */
-		iterator operator++(int) {}
-		/**
-		 * TODO ++iter
-		 */
-		iterator & operator++() {}
-		/**
-		 * TODO iter--
-		 */
-		iterator operator--(int) {}
-		/**
-		 * TODO --iter
-		 */
-		iterator & operator--() {}
-		/**
-		 * a operator to check whether two iterators are same (pointing to the same memory).
-		 */
-		value_type & operator*() const {}
-		bool operator==(const iterator &rhs) const {}
-		bool operator==(const const_iterator &rhs) const {}
-		/**
-		 * some other operator for iterator.
-		 */
-		bool operator!=(const iterator &rhs) const {}
-		bool operator!=(const const_iterator &rhs) const {}
 
+		iterator operator++(int) {
+		    iterator now(*this);
+		    operator++();
+		    return now;
+		}
+
+		iterator & operator++() {
+		    if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+		    nowNode=nowNode->next;
+		    return *this;
+		}
+
+		iterator operator--(int) {
+            iterator now(*this);
+            operator--();
+            return now;
+		}
+
+		iterator & operator--() {
+            if(nowNode== nullptr||nowNode==nowMap->head->next) throw invalid_iterator();
+            nowNode=nowNode->prev;
+            return *this;
+		}
+
+		value_type & operator*() const {
+		    return *operator->();
+		}
+
+		bool operator==(const iterator &rhs) const {
+		    return nowNode==rhs.nowNode;
+		}
+		bool operator==(const const_iterator &rhs) const {
+            return nowNode==rhs.nowNode;
+		}
+
+		bool operator!=(const iterator &rhs) const {
+            return nowNode!=rhs.nowNode;
+		}
+		bool operator!=(const const_iterator &rhs) const {
+            return nowNode!=rhs.nowNode;
+		}
 		/**
 		 * for the support of it->first. 
 		 * See <http://kelvinh.github.io/blog/2013/11/20/overloading-of-member-access-operator-dash-greater-than-symbol-in-cpp/> for help.
 		 */
-		value_type* operator->() const noexcept {}
+		value_type* operator->() const noexcept {
+		    if(nowNode== nullptr||nowNode==nowMap->tail) throw invalid_iterator();
+		    return nowNode->value;
+		}
 	};
 	class const_iterator {
 		// it should has similar member method as iterator.
