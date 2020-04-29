@@ -7,28 +7,14 @@
 #IncludeRegexTransform: 
 
 D:/Project/Clion Project/My_STLite/main.cpp
-iostream
--
-map
--
-ctime
--
-queue
--
-cmath
--
-vector
--
-cstdio
--
-cstdlib
--
-cstring
--
-algorithm
--
 mapA/map.hpp
 D:/Project/Clion Project/My_STLite/mapA/map.hpp
+iostream
+-
+cassert
+-
+string
+-
 
 D:/Project/Clion Project/My_STLite/mapA/exceptions.hpp
 cstddef
