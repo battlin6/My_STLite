@@ -354,7 +354,7 @@ private:
         Node *curNode=root;
         bool cas;
         while(true){
-            cas = compare_func(curNode->value->first,key);  //todo
+            cas = compare_func(curNode->value->first,key);
             if(!cas && !compare_func(key,curNode->value->first)) return {curNode,false};
             if(curNode->child[cas]== nullptr) break;
             curNode=curNode->child[cas];
@@ -378,7 +378,7 @@ private:
         curSize--;
         if(x->child[0]!= nullptr && x->child[1]!= nullptr){
             Swap_Node(x,x->next);
-        }
+        }   //x->next must be a leave
         down(x);
         link(x->prev,x->next);
 
